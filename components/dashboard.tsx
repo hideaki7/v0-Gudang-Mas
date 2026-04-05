@@ -32,7 +32,7 @@ export function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar className="glass-panel border-r m-3 rounded-2xl">
+      <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
         <SidebarHeader className="border-b border-border p-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">

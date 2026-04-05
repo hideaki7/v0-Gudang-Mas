@@ -121,7 +121,7 @@ export function DashboardContent({ activeNav }: { activeNav: string }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
-          <div key={index} className="glass-card group hover:backdrop-blur-2xl transition-all duration-300">
+          <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 group hover:backdrop-blur-2xl transition-all duration-300">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
@@ -149,7 +149,7 @@ export function DashboardContent({ activeNav }: { activeNav: string }) {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Supplier Return Rate Chart */}
-        <div className="glass-card lg:col-span-2">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 lg:col-span-2">
           <h3 className="text-lg font-bold text-foreground mb-2">Top Suppliers with Highest Return Rate</h3>
           <p className="text-sm text-muted-foreground mb-6">Percentage of returned items by supplier</p>
           <ResponsiveContainer width="100%" height={280}>
@@ -178,7 +178,7 @@ export function DashboardContent({ activeNav }: { activeNav: string }) {
         </div>
 
         {/* Quality Trend Chart */}
-        <div className="glass-card">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
           <h3 className="text-lg font-bold text-foreground mb-2">Weekly Quality Trend</h3>
           <p className="text-sm text-muted-foreground mb-6">Quality score percentage</p>
           <ResponsiveContainer width="100%" height={280}>
@@ -211,7 +211,7 @@ export function DashboardContent({ activeNav }: { activeNav: string }) {
       </div>
 
       {/* Recent Incoming Goods Table */}
-      <div className="glass-card">
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
         <h3 className="text-lg font-bold text-foreground mb-2">Recent Incoming Goods</h3>
         <p className="text-sm text-muted-foreground mb-6">Latest shipments received and processed</p>
         <div className="overflow-x-auto">

@@ -124,16 +124,4 @@
   }
 }
 
-@layer components {
-  .glass-panel {
-    @apply bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg;
-  }
 
-  .glass-button {
-    @apply bg-primary/20 hover:bg-primary text-primary hover:text-primary-foreground backdrop-blur-md border border-primary/30 rounded-xl px-4 py-2 transition-all duration-200 font-medium;
-  }
-
-  .glass-card {
-    @apply glass-panel p-6;
-  }
-}
