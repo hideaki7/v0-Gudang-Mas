@@ -32,11 +32,11 @@ export function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar className="bg-white border-r border-border">
+      <Sidebar className="glass-panel border-r m-3 rounded-2xl">
         <SidebarHeader className="border-b border-border p-6">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <Package2 className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+              <Package2 className="w-7 h-7 text-white" />
             </div>
             <div className="flex flex-col">
               <h1 className="font-bold text-lg text-foreground">GudangMas</h1>
@@ -45,16 +45,16 @@ export function Dashboard() {
           </div>
         </SidebarHeader>
         <SidebarContent className="flex-1">
-          <SidebarMenu className="space-y-2 px-2">
+          <SidebarMenu className="space-y-3 px-3">
             {navItems.map((item) => {
               const Icon = item.icon
               return (
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
                     onClick={() => setActiveNav(item.value)}
-                    className={`w-full justify-start px-4 py-2 rounded-lg transition-colors ${
+                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${
                       activeNav === item.value
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-white shadow-lg'
                         : 'text-foreground hover:bg-secondary'
                     }`}
                   >
@@ -69,13 +69,13 @@ export function Dashboard() {
         <div className="border-t border-border p-4 space-y-2">
           <SidebarMenu className="space-y-0">
             <SidebarMenuItem>
-              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-colors">
+              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
                 <Settings className="w-5 h-5 mr-3" />
                 <span>Settings</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-colors">
+              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
                 <LogOut className="w-5 h-5 mr-3" />
                 <span>Logout</span>
               </SidebarMenuButton>
@@ -85,13 +85,13 @@ export function Dashboard() {
       </Sidebar>
 
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto">
-        <header className="sticky top-0 flex h-16 shrink-0 items-center justify-between border-b border-border bg-white px-6 z-40">
-          <h2 className="text-2xl font-bold text-foreground">
+        <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
+          <h2 className="text-3xl font-bold text-foreground">
             {navItems.find((item) => item.value === activeNav)?.label}
           </h2>
           <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-secondary rounded-lg transition-colors">
-              <Menu className="w-5 h-5 text-foreground" />
+            <button className="p-2.5 hover:bg-secondary rounded-xl transition-all duration-200">
+              <Menu className="w-6 h-6 text-accent" />
             </button>
           </div>
         </header>

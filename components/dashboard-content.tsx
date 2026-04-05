@@ -1,10 +1,10 @@
 'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp } from 'lucide-react'
+import { TrendingUp, ArrowUp, ArrowDown } from 'lucide-react'
 
 const supplierReturnData = [
   { name: 'PT Maju Jaya', returnRate: 8.5 },
@@ -73,177 +73,181 @@ const statsCards = [
     value: '24,580',
     subtitle: 'items in warehouse',
     change: '+5.2%',
-    color: 'bg-blue-50 border-blue-200',
+    positive: true,
+    icon: '📦',
   },
   {
     title: 'Active Suppliers',
     value: '42',
     subtitle: 'suppliers on contract',
     change: '+2',
-    color: 'bg-emerald-50 border-emerald-200',
+    positive: true,
+    icon: '🏢',
   },
   {
     title: 'Pending Returns',
     value: '18',
     subtitle: 'items awaiting inspection',
     change: '-3',
-    color: 'bg-orange-50 border-orange-200',
+    positive: true,
+    icon: '↩️',
   },
   {
     title: 'Quality Score',
     value: '91.4%',
     subtitle: 'weekly average',
     change: '+1.2%',
-    color: 'bg-purple-50 border-purple-200',
+    positive: true,
+    icon: '✨',
   },
 ]
 
 function getStatusColor(status: string) {
   switch (status) {
     case 'Received':
-      return 'bg-green-100 text-green-800'
+      return 'bg-emerald-500/30 text-emerald-300'
     case 'In Transit':
-      return 'bg-blue-100 text-blue-800'
+      return 'bg-blue-500/30 text-blue-300'
     case 'Processing':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-orange-500/30 text-orange-300'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-gray-500/30 text-gray-300'
   }
 }
 
 export function DashboardContent({ activeNav }: { activeNav: string }) {
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-8 space-y-8">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
-          <Card key={index} className={`${stat.color} border`}>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-foreground">{stat.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
-                <span className="text-xs font-semibold text-primary">{stat.change}</span>
+          <div key={index} className="glass-card group hover:backdrop-blur-2xl transition-all duration-300">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
+                <h3 className="text-3xl font-bold text-foreground">{stat.value}</h3>
               </div>
-            </CardContent>
-          </Card>
+              <span className="text-4xl opacity-60 group-hover:opacity-100 transition-opacity">{stat.icon}</span>
+            </div>
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
+              <div className="flex items-center gap-1">
+                {stat.positive ? (
+                  <ArrowUp className="w-3 h-3 text-accent" />
+                ) : (
+                  <ArrowDown className="w-3 h-3 text-destructive" />
+                )}
+                <span className={`text-xs font-semibold ${stat.positive ? 'text-accent' : 'text-destructive'}`}>
+                  {stat.change}
+                </span>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Supplier Return Rate Chart */}
-        <Card className="lg:col-span-2 bg-white border-border">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-foreground">
-              Top Suppliers with Highest Return Rate
-            </CardTitle>
-            <CardDescription>Percentage of returned items by supplier</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={supplierReturnData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="name" fontSize={12} stroke="#6b7280" />
-                <YAxis fontSize={12} stroke="#6b7280" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    borderRadius: '8px',
-                    color: '#f1f5f9',
-                  }}
-                  formatter={(value) => `${value}%`}
-                />
-                <Legend />
-                <Bar
-                  dataKey="returnRate"
-                  name="Return Rate (%)"
-                  fill="#3b82f6"
-                  radius={[8, 8, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <div className="glass-card lg:col-span-2">
+          <h3 className="text-lg font-bold text-foreground mb-2">Top Suppliers with Highest Return Rate</h3>
+          <p className="text-sm text-muted-foreground mb-6">Percentage of returned items by supplier</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={supplierReturnData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+              <XAxis dataKey="name" fontSize={12} stroke="#9ca3af" tick={{ fontSize: 11 }} />
+              <YAxis fontSize={12} stroke="#9ca3af" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgba(42, 42, 62, 0.9)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: '#e5e7eb',
+                  backdropFilter: 'blur(10px)',
+                }}
+                formatter={(value) => `${value}%`}
+              />
+              <Bar
+                dataKey="returnRate"
+                name="Return Rate (%)"
+                fill="#14b8a6"
+                radius={[12, 12, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
         {/* Quality Trend Chart */}
-        <Card className="bg-white border-border">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-foreground">Weekly Quality Trend</CardTitle>
-            <CardDescription>Quality score percentage</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={qualityTrendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="day" fontSize={12} stroke="#6b7280" />
-                <YAxis fontSize={12} stroke="#6b7280" domain={[80, 100]} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    borderRadius: '8px',
-                    color: '#f1f5f9',
-                  }}
-                  formatter={(value) => `${value}%`}
-                />
-                <Bar
-                  dataKey="percentage"
-                  name="Quality %"
-                  fill="#8b5cf6"
-                  radius={[8, 8, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <div className="glass-card">
+          <h3 className="text-lg font-bold text-foreground mb-2">Weekly Quality Trend</h3>
+          <p className="text-sm text-muted-foreground mb-6">Quality score percentage</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={qualityTrendData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+              <XAxis dataKey="day" fontSize={12} stroke="#9ca3af" />
+              <YAxis fontSize={12} stroke="#9ca3af" domain={[80, 100]} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgba(42, 42, 62, 0.9)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: '#e5e7eb',
+                  backdropFilter: 'blur(10px)',
+                }}
+                formatter={(value) => `${value}%`}
+              />
+              <Line
+                type="monotone"
+                dataKey="percentage"
+                name="Quality %"
+                stroke="#0ea5e9"
+                strokeWidth={3}
+                dot={{ fill: '#0ea5e9', r: 5 }}
+                activeDot={{ r: 7 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* Recent Incoming Goods Table */}
-      <Card className="bg-white border-border">
-        <CardHeader>
-          <CardTitle className="text-lg font-bold text-foreground">Recent Incoming Goods</CardTitle>
-          <CardDescription>Latest shipments received and processed</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-b border-border hover:bg-transparent">
-                  <TableHead className="text-foreground font-semibold">ID</TableHead>
-                  <TableHead className="text-foreground font-semibold">Supplier</TableHead>
-                  <TableHead className="text-foreground font-semibold">Items</TableHead>
-                  <TableHead className="text-foreground font-semibold">Quantity</TableHead>
-                  <TableHead className="text-foreground font-semibold">Date</TableHead>
-                  <TableHead className="text-foreground font-semibold">Status</TableHead>
+      <div className="glass-card">
+        <h3 className="text-lg font-bold text-foreground mb-2">Recent Incoming Goods</h3>
+        <p className="text-sm text-muted-foreground mb-6">Latest shipments received and processed</p>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border hover:bg-transparent">
+                <TableHead className="text-accent font-semibold">ID</TableHead>
+                <TableHead className="text-accent font-semibold">Supplier</TableHead>
+                <TableHead className="text-accent font-semibold">Items</TableHead>
+                <TableHead className="text-accent font-semibold">Quantity</TableHead>
+                <TableHead className="text-accent font-semibold">Date</TableHead>
+                <TableHead className="text-accent font-semibold">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {incomingGoodsData.map((item) => (
+                <TableRow
+                  key={item.id}
+                  className="border-b border-border hover:bg-secondary/50 transition-all duration-200 hover:backdrop-blur-xl"
+                >
+                  <TableCell className="font-mono text-sm text-primary">{item.id}</TableCell>
+                  <TableCell className="text-foreground">{item.supplier}</TableCell>
+                  <TableCell className="text-foreground">{item.items}</TableCell>
+                  <TableCell className="font-semibold text-foreground">{item.quantity}</TableCell>
+                  <TableCell className="text-muted-foreground text-sm">{item.date}</TableCell>
+                  <TableCell>
+                    <Badge className={`${getStatusColor(item.status)} border-0 rounded-lg`}>
+                      {item.status}
+                    </Badge>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {incomingGoodsData.map((item) => (
-                  <TableRow
-                    key={item.id}
-                    className="border-b border-border hover:bg-secondary/50 transition-colors"
-                  >
-                    <TableCell className="font-mono text-sm text-primary">{item.id}</TableCell>
-                    <TableCell className="text-foreground">{item.supplier}</TableCell>
-                    <TableCell className="text-foreground">{item.items}</TableCell>
-                    <TableCell className="font-semibold text-foreground">{item.quantity}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{item.date}</TableCell>
-                    <TableCell>
-                      <Badge className={`${getStatusColor(item.status)} border-0`}>
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   )
 }
