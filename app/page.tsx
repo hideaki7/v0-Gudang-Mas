@@ -1,7 +1,12 @@
 'use client'
 
 import { Dashboard } from '@/components/dashboard'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 export default function Home() {
-  return <Dashboard />
+  return (
+    <SidebarProvider>
+      <Dashboard />
+    </SidebarProvider>
+  )
 }
