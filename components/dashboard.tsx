@@ -20,6 +20,9 @@ import { DashboardContent } from '@/components/dashboard-content'
 import { SupplierManagement } from '@/components/supplier-management'
 import { ReturnRequestForm } from '@/components/return-request-form'
 import { ReturnHistory } from '@/components/return-history'
+import { InventoryPage } from '@/components/inventory-page'
+import { IncomingGoodsPage } from '@/components/incoming-goods-page'
+import { ReportsPage } from '@/components/reports-page'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 
 const navItems = [
@@ -100,11 +103,11 @@ export function Dashboard() {
         </header>
 
         <main className="flex-1 overflow-auto">
-          {activeNav === 'inventory' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
+          {activeNav === 'inventory' && <InventoryPage />}
           {activeNav === 'suppliers' && <SupplierManagement />}
           {activeNav === 'returns' && <ReturnHistory />}
-          {activeNav === 'incoming' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
-          {activeNav === 'reports' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
+          {activeNav === 'incoming' && <IncomingGoodsPage />}
+          {activeNav === 'reports' && <ReportsPage />}
         </main>
       </SidebarInset>
     </div>
