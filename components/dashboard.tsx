@@ -23,32 +23,36 @@ import { ReturnHistory } from '@/components/return-history'
 import { InventoryPage } from '@/components/inventory-page'
 import { IncomingGoodsPage } from '@/components/incoming-goods-page'
 import { ReportsPage } from '@/components/reports-page'
+import { MasterDashboard } from '@/components/master-dashboard'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 
 const navItems = [
-  { icon: Package2, label: 'Inventory', value: 'inventory' },
-  { icon: Users, label: 'Suppliers', value: 'suppliers' },
-  { icon: Truck, label: 'Incoming Goods', value: 'incoming' },
-  { icon: RotateCcw, label: 'Returns', value: 'returns' },
-  { icon: BarChart3, label: 'Reports', value: 'reports' },
+  { icon: Package2, label: 'Barang & Stok', value: 'inventory' },
+  { icon: Users, label: 'Pemasok', value: 'suppliers' },
+  { icon: Truck, label: 'Barang Masuk', value: 'incoming' },
+  { icon: RotateCcw, label: 'Retur', value: 'returns' },
+  { icon: BarChart3, label: 'Laporan', value: 'reports' },
 ]
 
 export function Dashboard() {
-  const [activeNav, setActiveNav] = useState('inventory')
+  const [activeNav, setActiveNav] = useState('dashboard')
 
   return (
     <div className="flex h-screen bg-background">
       <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
         <SidebarHeader className="border-b border-border p-6">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => setActiveNav('dashboard')}
+            className="flex items-center gap-3 w-full hover:opacity-80 transition-opacity"
+          >
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
               <Package2 className="w-7 h-7 text-white" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col text-left">
               <h1 className="font-bold text-lg text-foreground">GudangMas</h1>
               <p className="text-xs text-muted-foreground">Warehouse Manager</p>
             </div>
-          </div>
+          </button>
         </SidebarHeader>
         <SidebarContent className="flex-1">
           <SidebarMenu className="space-y-3 px-3">
@@ -93,7 +97,7 @@ export function Dashboard() {
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto">
         <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
           <h2 className="text-3xl font-bold text-foreground">
-            {navItems.find((item) => item.value === activeNav)?.label}
+            {activeNav === 'dashboard' ? 'Dashboard Utama' : navItems.find((item) => item.value === activeNav)?.label}
           </h2>
           <div className="flex items-center gap-4">
             <button className="p-2.5 hover:bg-secondary rounded-xl transition-all duration-200">
@@ -103,6 +107,7 @@ export function Dashboard() {
         </header>
 
         <main className="flex-1 overflow-auto">
+          {activeNav === 'dashboard' && <MasterDashboard />}
           {activeNav === 'inventory' && <InventoryPage />}
           {activeNav === 'suppliers' && <SupplierManagement />}
           {activeNav === 'returns' && <ReturnHistory />}
