@@ -17,6 +17,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { DashboardContent } from '@/components/dashboard-content'
+import { SupplierManagement } from '@/components/supplier-management'
+import { ReturnRequestForm } from '@/components/return-request-form'
+import { ReturnHistory } from '@/components/return-history'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 
 const navItems = [
@@ -97,7 +100,11 @@ export function Dashboard() {
         </header>
 
         <main className="flex-1 overflow-auto">
-          <DashboardContent activeNav={activeNav} />
+          {activeNav === 'inventory' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
+          {activeNav === 'suppliers' && <SupplierManagement />}
+          {activeNav === 'returns' && <ReturnHistory />}
+          {activeNav === 'incoming' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
+          {activeNav === 'reports' && <DashboardContent activeNav={activeNav} onNavigate={setActiveNav} />}
         </main>
       </SidebarInset>
     </div>

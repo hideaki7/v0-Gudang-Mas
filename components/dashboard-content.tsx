@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, ArrowUp, ArrowDown } from 'lucide-react'
+import { TrendingUp, ArrowUp, ArrowDown, RotateCcw } from 'lucide-react'
 
 const supplierReturnData = [
   { name: 'PT Maju Jaya', returnRate: 8.5 },
@@ -115,9 +115,26 @@ function getStatusColor(status: string) {
   }
 }
 
-export function DashboardContent({ activeNav }: { activeNav: string }) {
+export function DashboardContent({ activeNav, onNavigate }: { activeNav: string; onNavigate?: (page: string) => void }) {
   return (
     <div className="p-8 space-y-8">
+      {/* Header with CTA */}
+      {activeNav === 'inventory' && (
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+            <p className="text-muted-foreground">Overview of your warehouse management system</p>
+          </div>
+          <button
+            onClick={() => onNavigate?.('returns')}
+            className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
+          >
+            <RotateCcw className="w-5 h-5" />
+            New Return Request
+          </button>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
