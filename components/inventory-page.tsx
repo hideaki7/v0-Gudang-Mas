@@ -131,3 +131,5 @@ export function InventoryPage() {
     </div>
   )
 }
+
+export { InventoryPage }

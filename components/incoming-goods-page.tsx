@@ -242,3 +242,5 @@ export function IncomingGoodsPage() {
     </div>
   )
 }
+
+export { IncomingGoodsPage }

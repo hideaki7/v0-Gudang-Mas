@@ -191,3 +191,5 @@ export function ReportsPage() {
     </div>
   )
 }
+
+export { ReportsPage }
