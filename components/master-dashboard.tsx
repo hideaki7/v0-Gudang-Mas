@@ -82,7 +82,7 @@ export function MasterDashboard() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-foreground mb-2">Dashboard Utama</h1>
+        <h1 className="text-4xl font-bold text-foreground mb-2">Overview</h1>
         <p className="text-muted-foreground">Pantau performa gudang dan manajemen stok Anda</p>
       </div>
 
