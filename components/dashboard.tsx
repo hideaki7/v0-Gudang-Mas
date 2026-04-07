@@ -18,6 +18,7 @@ import { IncomingGoodsPage } from '@/components/incoming-goods-page'
 import { ReportsPage } from '@/components/reports-page'
 import { MasterDashboard } from '@/components/master-dashboard'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
+import { SupplierForm } from './supplier-form'
 
 const navItems = [
   { icon: Package2, label: 'Stok Barang', value: 'inventory' },
