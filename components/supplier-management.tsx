@@ -89,7 +89,7 @@ export function SupplierManagement() {
           <Search className="w-5 h-5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search by supplier name, contact person, or category..."
+            placeholder="Cari disini..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
@@ -105,10 +105,10 @@ export function SupplierManagement() {
               <TableRow className="border-b border-border hover:bg-transparent">
                 <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
                 <TableHead className="text-accent font-semibold">Contact Person</TableHead>
-                <TableHead className="text-accent font-semibold">Category</TableHead>
-                <TableHead className="text-accent font-semibold text-center">Total Shipments</TableHead>
-                <TableHead className="text-accent font-semibold text-center">Return Rate</TableHead>
-                <TableHead className="text-accent font-semibold text-center">Action</TableHead>
+                <TableHead className="text-accent font-semibold">Katergori</TableHead>
+                <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
+                <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
+                <TableHead className="text-accent font-semibold text-center">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,15 +157,17 @@ export function SupplierManagement() {
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Total Suppliers</p>
+          <p className="text-muted-foreground text-sm mb-2">Total Supplier</p>
           <h3 className="text-3xl font-bold text-foreground">{suppliers.length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Total Shipments</p>
-          <h3 className="text-3xl font-bold text-foreground">{suppliers.reduce((sum, s) => sum + s.shipments, 0)}</h3>
+          <p className="text-muted-foreground text-sm mb-2">Total Pengiriman</p>
+          <h3 className="text-3xl font-bold text-foreground">
+            {suppliers.reduce((sum, s) => sum + s.shipments, 0)}
+          </h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Avg Return Rate</p>
+          <p className="text-muted-foreground text-sm mb-2">Rata-rata Retur</p>
           <h3 className="text-3xl font-bold text-accent">
             {(suppliers.reduce((sum, s) => sum + s.returnRate, 0) / suppliers.length).toFixed(2)}%
           </h3>

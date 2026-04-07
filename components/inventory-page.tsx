@@ -59,13 +59,13 @@ export function InventoryPage() {
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-4 top-4 w-5 h-5 text-muted-foreground" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input
           type="text"
-          placeholder="Search by SKU, Product Name, or Category..."
+          placeholder="Cari berdasarkan SKU, Nama Produk, atau Kategori..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-input backdrop-blur-xl border border-border rounded-xl pl-12 pr-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+          className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl pl-12 pr-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-all"
         />
       </div>
 
@@ -116,16 +116,20 @@ export function InventoryPage() {
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Total Products</p>
+          <p className="text-sm text-muted-foreground mb-2">Total Produk</p>
           <h3 className="text-3xl font-bold text-foreground">{inventoryData.length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">In Stock</p>
-          <h3 className="text-3xl font-bold text-accent">{inventoryData.filter((i) => i.status === 'In Stock').length}</h3>
+          <p className="text-sm text-muted-foreground mb-2">Stok Tersedia</p>
+          <h3 className="text-3xl font-bold text-accent">
+            {inventoryData.filter((i) => i.status === 'In Stock').length}
+          </h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Low Stock</p>
-          <h3 className="text-3xl font-bold text-destructive">{inventoryData.filter((i) => i.status === 'Low Stock').length}</h3>
+          <p className="text-sm text-muted-foreground mb-2">Stok Rendah</p>
+          <h3 className="text-3xl font-bold text-destructive">
+            {inventoryData.filter((i) => i.status === 'Low Stock').length}
+          </h3>
         </div>
       </div>
     </div>
