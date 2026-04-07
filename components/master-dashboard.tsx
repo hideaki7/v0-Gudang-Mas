@@ -83,7 +83,7 @@ export function MasterDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold text-foreground mb-2">Dashboard Utama</h1>
-        <p className="text-muted-foreground">Ringkasan performa gudang dan manajemen stok Anda</p>
+        <p className="text-muted-foreground">Pantau performa gudang dan manajemen stok Anda</p>
       </div>
 
       {/* Metrics Cards */}
@@ -196,13 +196,13 @@ export function MasterDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Top Suppliers Table */}
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <h3 className="text-lg font-bold text-foreground mb-2">Pemasok Terkemuka</h3>
-          <p className="text-sm text-muted-foreground mb-6">Pemasok dengan tingkat retur tertinggi</p>
+          <h3 className="text-lg font-bold text-foreground mb-2">Performa Supplier</h3>
+          <p className="text-sm text-muted-foreground mb-6">Daftar supplier dengan tingkat retur tertinggi</p>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="border-b border-border hover:bg-transparent">
-                  <TableHead className="text-accent font-semibold">Pemasok</TableHead>
+                  <TableHead className="text-accent font-semibold">Supplier</TableHead>
                   <TableHead className="text-accent font-semibold text-right">Pengiriman</TableHead>
                   <TableHead className="text-accent font-semibold text-right">Retur</TableHead>
                   <TableHead className="text-accent font-semibold text-right">Tingkat %</TableHead>

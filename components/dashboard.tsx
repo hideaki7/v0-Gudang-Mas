@@ -27,8 +27,8 @@ import { MasterDashboard } from '@/components/master-dashboard'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 
 const navItems = [
-  { icon: Package2, label: 'Barang & Stok', value: 'inventory' },
-  { icon: Users, label: 'Pemasok', value: 'suppliers' },
+  { icon: Package2, label: 'Stok Barang', value: 'inventory' },
+  { icon: Users, label: 'Supplier', value: 'suppliers' },
   { icon: Truck, label: 'Barang Masuk', value: 'incoming' },
   { icon: RotateCcw, label: 'Retur', value: 'returns' },
   { icon: BarChart3, label: 'Laporan', value: 'reports' },
@@ -62,11 +62,10 @@ export function Dashboard() {
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
                     onClick={() => setActiveNav(item.value)}
-                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${
-                      activeNav === item.value
+                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value
                         ? 'bg-primary text-white shadow-lg'
                         : 'text-foreground hover:bg-secondary'
-                    }`}
+                      }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
                     <span>{item.label}</span>
