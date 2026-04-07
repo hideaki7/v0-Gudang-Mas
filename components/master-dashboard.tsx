@@ -44,7 +44,7 @@ const metricsData = [
   {
     label: 'Total Stok',
     value: '24,580',
-    subtitle: 'Items di gudang',
+    subtitle: 'Item di gudang',
     change: '+5.2%',
     positive: true,
     icon: '📦',
