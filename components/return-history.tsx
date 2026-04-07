@@ -104,7 +104,7 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Riwayat Retur</h1>
-          <p className="text-muted-foreground">Pantau status seluruh pengembalian produk Anda.</p>
+          <p className="text-muted-foreground">Kelola pengajuan retur serta status persetujuannya secara transparan.</p>
         </div>
 
         {/* Bagian Tombol Aksi */}
