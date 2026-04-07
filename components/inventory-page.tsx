@@ -120,16 +120,12 @@ export function InventoryPage() {
           <h3 className="text-3xl font-bold text-foreground">{inventoryData.length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Stok Tersedia</p>
-          <h3 className="text-3xl font-bold text-accent">
-            {inventoryData.filter((i) => i.status === 'In Stock').length}
-          </h3>
+          <p className="text-sm text-muted-foreground mb-2">Jumlah Stok</p>
+          <h3 className="text-3xl font-bold text-accent">{inventoryData.filter((i) => i.status === 'In Stock').length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Stok Rendah</p>
-          <h3 className="text-3xl font-bold text-destructive">
-            {inventoryData.filter((i) => i.status === 'Low Stock').length}
-          </h3>
+          <p className="text-sm text-muted-foreground mb-2">Stok Sedikit</p>
+          <h3 className="text-3xl font-bold text-destructive">{inventoryData.filter((i) => i.status === 'Low Stock').length}</h3>
         </div>
       </div>
     </div>
