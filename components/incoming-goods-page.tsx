@@ -73,7 +73,7 @@ export function IncomingGoodsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">Manajemen Barang Masuk</h1>
-        <p className="text-muted-foreground">Pantau dan catat setiap pengiriman barang yang masuk ke gudang.</p>
+        <p className="text-muted-foreground">Catat dan lacak setiap kiriman masuk untuk memastikan jumlah serta kualitas barang sesuai pesanan.</p>
       </div>
 
       {/* Split View */}

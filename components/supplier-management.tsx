@@ -75,7 +75,7 @@ export function SupplierManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Daftar Supplier</h1>
-          <p className="text-muted-foreground">Kelola dan pantau data seluruh mitra supplier Anda</p>
+          <p className="text-muted-foreground">Kelola data kontak, kategori produk, dan evaluasi performa pengiriman dari seluruh mitra supplier Anda.</p>
         </div>
         <button className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg">
           <Plus className="w-5 h-5" />
