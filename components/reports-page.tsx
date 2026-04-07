@@ -39,7 +39,7 @@ export function ReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Analisis & Laporan</h1>
-          <p className="text-muted-foreground">Wawasan mendalam mengenai performa gudang dan metrik operasional.</p>
+          <p className="text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
         </div>
         <button className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg">
           <Download className="w-5 h-5" />

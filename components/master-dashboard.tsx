@@ -44,7 +44,7 @@ const metricsData = [
   {
     label: 'Total Stok',
     value: '24,580',
-    subtitle: 'items di gudang',
+    subtitle: 'Items di gudang',
     change: '+5.2%',
     positive: true,
     icon: '📦',
@@ -52,7 +52,7 @@ const metricsData = [
   {
     label: 'Barang Masuk',
     value: '3,240',
-    subtitle: 'bulan ini',
+    subtitle: 'Bulan ini',
     change: '+12.5%',
     positive: true,
     icon: '📥',
@@ -60,7 +60,7 @@ const metricsData = [
   {
     label: 'Total Retur',
     value: '287',
-    subtitle: 'tahun ini',
+    subtitle: 'Tahun ini',
     change: '-3.2%',
     positive: true,
     icon: '↩️',
@@ -68,7 +68,7 @@ const metricsData = [
   {
     label: 'Skor Kualitas',
     value: '94.2%',
-    subtitle: 'minggu ini',
+    subtitle: 'Minggu ini',
     change: '+2.1%',
     positive: true,
     icon: '✨',
@@ -83,7 +83,7 @@ export function MasterDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold text-foreground mb-2">Overview</h1>
-        <p className="text-muted-foreground">Pantau performa gudang dan manajemen stok Anda</p>
+        <p className="text-muted-foreground">Pantau performa gudang dan manajemen stok Anda.</p>
       </div>
 
       {/* Metrics Cards */}
