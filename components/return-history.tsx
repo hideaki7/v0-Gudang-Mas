@@ -153,7 +153,7 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
               <Search className="w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Cari berdasarkan ID, supplier, atau produk..."
+                placeholder="Cari disini..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"

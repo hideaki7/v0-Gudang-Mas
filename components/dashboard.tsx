@@ -64,8 +64,8 @@ export function Dashboard() {
                   <SidebarMenuButton
                     onClick={() => handleNavChange(item.value)}
                     className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value
-                        ? 'bg-primary text-white shadow-lg'
-                        : 'text-foreground hover:bg-secondary'
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'text-foreground hover:bg-secondary'
                       }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -116,9 +116,13 @@ export function Dashboard() {
           <div className="w-full">
             {activeNav === 'dashboard' && <MasterDashboard />}
             {activeNav === 'inventory' && <InventoryPage />}
-            {activeNav === 'suppliers' && <SupplierManagement />}
-
-            {/* Alur Logika Retur yang Diperbaiki */}
+            {activeNav === 'suppliers' && (
+              isCreatingSupplier ? (
+                <SupplierForm onCancel={() => setIsCreatingSupplier(false)} />
+              ) : (
+                <SupplierManagement onAddSupplier={() => setIsCreatingSupplier(true)} />
+              )
+            )}
             {activeNav === 'returns' && (
               isCreatingReturn ? (
                 // Kirim fungsi close agar form bisa ditutup
