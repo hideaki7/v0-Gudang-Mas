@@ -10,13 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { DashboardContent } from '@/components/dashboard-content'
 import { SupplierManagement } from '@/components/supplier-management'
 import { ReturnRequestForm } from '@/components/return-request-form'
 import { ReturnHistory } from '@/components/return-history'
@@ -36,13 +29,21 @@ const navItems = [
 
 export function Dashboard() {
   const [activeNav, setActiveNav] = useState('dashboard')
+  // State baru untuk mengontrol tampilan antara list riwayat dan form input retur
+  const [isCreatingReturn, setIsCreatingReturn] = useState(false)
+
+  // Fungsi untuk reset state saat pindah menu utama
+  const handleNavChange = (value: string) => {
+    setActiveNav(value)
+    setIsCreatingReturn(false) // Reset form retur jika pindah menu
+  }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background w-full">
       <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
         <SidebarHeader className="border-b border-border p-6">
           <button
-            onClick={() => setActiveNav('dashboard')}
+            onClick={() => handleNavChange('dashboard')}
             className="flex items-center gap-3 w-full hover:opacity-80 transition-opacity"
           >
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
@@ -61,7 +62,7 @@ export function Dashboard() {
               return (
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
-                    onClick={() => setActiveNav(item.value)}
+                    onClick={() => handleNavChange(item.value)}
                     className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value
                         ? 'bg-primary text-white shadow-lg'
                         : 'text-foreground hover:bg-secondary'
@@ -93,10 +94,15 @@ export function Dashboard() {
         </div>
       </Sidebar>
 
-      <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto">
+      {/* Tambahkan w-full untuk memastikan container mengambil ruang maksimal */}
+      <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
         <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
           <h2 className="text-3xl font-bold text-foreground">
-            {activeNav === 'dashboard' ? 'Dashboard Utama' : navItems.find((item) => item.value === activeNav)?.label}
+            {activeNav === 'dashboard'
+              ? 'Dashboard Utama'
+              : isCreatingReturn && activeNav === 'returns'
+                ? 'Pengajuan Retur Baru'
+                : navItems.find((item) => item.value === activeNav)?.label}
           </h2>
           <div className="flex items-center gap-4">
             <button className="p-2.5 hover:bg-secondary rounded-xl transition-all duration-200">
@@ -105,13 +111,27 @@ export function Dashboard() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto">
-          {activeNav === 'dashboard' && <MasterDashboard />}
-          {activeNav === 'inventory' && <InventoryPage />}
-          {activeNav === 'suppliers' && <SupplierManagement />}
-          {activeNav === 'returns' && <ReturnHistory />}
-          {activeNav === 'incoming' && <IncomingGoodsPage />}
-          {activeNav === 'reports' && <ReportsPage />}
+        {/* Tambahkan w-full di sini untuk mengatasi ruang kosong di kanan */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full">
+          <div className="w-full">
+            {activeNav === 'dashboard' && <MasterDashboard />}
+            {activeNav === 'inventory' && <InventoryPage />}
+            {activeNav === 'suppliers' && <SupplierManagement />}
+
+            {/* Alur Logika Retur yang Diperbaiki */}
+            {activeNav === 'returns' && (
+              isCreatingReturn ? (
+                // Kirim fungsi close agar form bisa ditutup
+                <ReturnRequestForm onCancel={() => setIsCreatingReturn(false)} />
+              ) : (
+                // Kirim fungsi open agar list riwayat bisa membuka form
+                <ReturnHistory onAddReturn={() => setIsCreatingReturn(true)} />
+              )
+            )}
+
+            {activeNav === 'incoming' && <IncomingGoodsPage />}
+            {activeNav === 'reports' && <ReportsPage />}
+          </div>
         </main>
       </SidebarInset>
     </div>

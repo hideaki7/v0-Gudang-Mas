@@ -58,15 +58,17 @@ export function InventoryPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Cari berdasarkan SKU, Nama Produk, atau Kategori..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl pl-12 pr-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-all"
-        />
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+        <div className="flex items-center gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3">
+          <Search className="w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Cari disini..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
+          />
+        </div>
       </div>
 
       {/* Inventory Table */}
@@ -75,9 +77,9 @@ export function InventoryPage() {
           <TableHeader>
             <TableRow className="border-b border-border hover:bg-transparent">
               <TableHead className="text-accent font-semibold">SKU</TableHead>
-              <TableHead className="text-accent font-semibold">Product Name</TableHead>
-              <TableHead className="text-accent font-semibold">Category</TableHead>
-              <TableHead className="text-accent font-semibold">Current Stock</TableHead>
+              <TableHead className="text-accent font-semibold">Nama Produk</TableHead>
+              <TableHead className="text-accent font-semibold">Kategori</TableHead>
+              <TableHead className="text-accent font-semibold">Jumlah Stok</TableHead>
               <TableHead className="text-accent font-semibold">Unit</TableHead>
               <TableHead className="text-accent font-semibold">Status</TableHead>
             </TableRow>
@@ -105,7 +107,7 @@ export function InventoryPage() {
             ) : (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No products found matching your search.
+                  Tidak ada produk yang cocok.
                 </TableCell>
               </TableRow>
             )}
@@ -120,7 +122,7 @@ export function InventoryPage() {
           <h3 className="text-3xl font-bold text-foreground">{inventoryData.length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Jumlah Stok</p>
+          <p className="text-sm text-muted-foreground mb-2">Jumlah Stok Aman</p>
           <h3 className="text-3xl font-bold text-accent">{inventoryData.filter((i) => i.status === 'In Stock').length}</h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">

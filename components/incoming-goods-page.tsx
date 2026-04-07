@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import { X, Plus, Trash2 } from 'lucide-react'
 
 const recentShipments = [
-  { id: 'SHP-001', supplier: 'PT Maju Jaya', items: 5, date: '2024-04-05', status: 'Received', totalQty: 250 },
-  { id: 'SHP-002', supplier: 'CV Industri Indonesia', items: 3, date: '2024-04-04', status: 'In Transit', totalQty: 180 },
-  { id: 'SHP-003', supplier: 'Bersama Utama', items: 7, date: '2024-04-03', status: 'Processing', totalQty: 420 },
-  { id: 'SHP-004', supplier: 'Global Supplies Ltd', items: 4, date: '2024-04-02', status: 'Received', totalQty: 340 },
-  { id: 'SHP-005', supplier: 'Tech Components Asia', items: 6, date: '2024-04-01', status: 'In Transit', totalQty: 510 },
+  { id: 'SHP-001', supplier: 'PT Maju Jaya', items: 5, date: '2024-04-05', status: 'Diterima', totalQty: 250 },
+  { id: 'SHP-002', supplier: 'CV Industri Indonesia', items: 3, date: '2024-04-04', status: 'Dalam Perjalanan', totalQty: 180 },
+  { id: 'SHP-003', supplier: 'Bersama Utama', items: 7, date: '2024-04-03', status: 'Diproses', totalQty: 420 },
+  { id: 'SHP-004', supplier: 'Global Supplies Ltd', items: 4, date: '2024-04-02', status: 'Diterima', totalQty: 340 },
+  { id: 'SHP-005', supplier: 'Tech Components Asia', items: 6, date: '2024-04-01', status: 'Dalam Perjalanan', totalQty: 510 },
 ]
 
 const suppliers = [
@@ -58,7 +58,7 @@ export function IncomingGoodsPage() {
     if (!formData.supplier || !formData.date || hasEmptyFields) {
       return
     }
-    setSuccessMessage('Incoming goods added successfully!')
+    setSuccessMessage('Data barang masuk berhasil ditambahkan!')
     setTimeout(() => {
       setFormData({ supplier: suppliers[0], date: new Date().toISOString().split('T')[0] })
       setProductRows([{ id: '1', name: '', quantity: 0 }])
@@ -72,24 +72,23 @@ export function IncomingGoodsPage() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Incoming Goods Management</h1>
-        <p className="text-muted-foreground">Track and record incoming shipments</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Manajemen Barang Masuk</h1>
+        <p className="text-muted-foreground">Pantau dan catat setiap pengiriman barang yang masuk ke gudang.</p>
       </div>
 
       {/* Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Side: Recent Shipments */}
+        {/* Sisi Kiri: Riwayat Pengiriman */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-foreground">Recent Shipments</h2>
+          <h2 className="text-xl font-bold text-foreground">Riwayat Pengiriman</h2>
           <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg overflow-hidden">
             <div className="overflow-y-auto max-h-96">
               {recentShipments.map((shipment) => (
                 <div
                   key={shipment.id}
                   onClick={() => setSelectedShipment(shipment.id)}
-                  className={`p-4 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${
-                    selectedShipment === shipment.id ? 'bg-secondary border-l-4 border-l-primary' : ''
-                  }`}
+                  className={`p-4 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment === shipment.id ? 'bg-secondary border-l-4 border-l-primary' : ''
+                    }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
@@ -97,19 +96,18 @@ export function IncomingGoodsPage() {
                       <p className="text-muted-foreground text-xs">{shipment.supplier}</p>
                     </div>
                     <Badge
-                      className={`border-0 rounded-lg text-xs ${
-                        shipment.status === 'Received'
-                          ? 'bg-emerald-500/30 text-emerald-300'
-                          : shipment.status === 'In Transit'
-                            ? 'bg-blue-500/30 text-blue-300'
-                            : 'bg-orange-500/30 text-orange-300'
-                      }`}
+                      className={`border-0 rounded-lg text-xs ${shipment.status === 'Diterima'
+                        ? 'bg-emerald-500/30 text-emerald-300'
+                        : shipment.status === 'Dalam Perjalanan'
+                          ? 'bg-blue-500/30 text-blue-300'
+                          : 'bg-orange-500/30 text-orange-300'
+                        }`}
                     >
                       {shipment.status}
                     </Badge>
                   </div>
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{shipment.items} items</span>
+                    <span>{shipment.items} item</span>
                     <span>{shipment.date}</span>
                   </div>
                 </div>
@@ -117,13 +115,13 @@ export function IncomingGoodsPage() {
             </div>
           </div>
 
-          {/* Shipment Details */}
+          {/* Detail Pengiriman */}
           {selectedShipmentData && (
             <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-4">
-              <h3 className="font-bold text-foreground">Shipment Details</h3>
+              <h3 className="font-bold text-foreground">Detail Pengiriman</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">ID:</span>
+                  <span className="text-muted-foreground">ID Pengiriman:</span>
                   <span className="text-foreground font-mono">{selectedShipmentData.id}</span>
                 </div>
                 <div className="flex justify-between">
@@ -131,15 +129,15 @@ export function IncomingGoodsPage() {
                   <span className="text-foreground">{selectedShipmentData.supplier}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Items:</span>
+                  <span className="text-muted-foreground">Jumlah Item:</span>
                   <span className="text-foreground font-semibold">{selectedShipmentData.items}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Qty:</span>
+                  <span className="text-muted-foreground">Total Kuantitas:</span>
                   <span className="text-foreground font-semibold">{selectedShipmentData.totalQty}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Date:</span>
+                  <span className="text-muted-foreground">Tanggal:</span>
                   <span className="text-foreground">{selectedShipmentData.date}</span>
                 </div>
               </div>
@@ -147,18 +145,18 @@ export function IncomingGoodsPage() {
           )}
         </div>
 
-        {/* Right Side: Add New Incoming Goods Form */}
+        {/* Sisi Kanan: Form Input Barang Baru */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-foreground">Add New Incoming Goods</h2>
+          <h2 className="text-xl font-bold text-foreground">Input Barang Baru</h2>
           <form onSubmit={handleSubmit} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-6">
-            {/* Success Message */}
+            {/* Pesan Sukses */}
             {successMessage && (
               <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4 text-emerald-300 text-sm font-medium">
                 {successMessage}
               </div>
             )}
 
-            {/* Supplier Select */}
+            {/* Pilih Supplier */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Supplier</label>
               <select
@@ -174,9 +172,9 @@ export function IncomingGoodsPage() {
               </select>
             </div>
 
-            {/* Date Select */}
+            {/* Pilih Tanggal */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Date</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Tanggal Masuk</label>
               <input
                 type="date"
                 value={formData.date}
@@ -185,22 +183,22 @@ export function IncomingGoodsPage() {
               />
             </div>
 
-            {/* Products Section */}
+            {/* Bagian Produk */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground">Products</label>
-              <div className="space-y-3 max-h-64 overflow-y-auto">
-                {productRows.map((row, idx) => (
+              <label className="block text-sm font-medium text-foreground">Daftar Produk</label>
+              <div className="space-y-3 max-h-64 overflow-y-auto text-black">
+                {productRows.map((row) => (
                   <div key={row.id} className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Product Name"
+                      placeholder="Nama Produk"
                       value={row.name}
                       onChange={(e) => handleProductChange(row.id, 'name', e.target.value)}
                       className="flex-1 bg-input backdrop-blur-xl border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     />
                     <input
                       type="number"
-                      placeholder="Qty"
+                      placeholder="Jml"
                       value={row.quantity || ''}
                       onChange={(e) => handleProductChange(row.id, 'quantity', parseInt(e.target.value) || 0)}
                       className="w-20 bg-input backdrop-blur-xl border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
@@ -218,23 +216,23 @@ export function IncomingGoodsPage() {
                 ))}
               </div>
 
-              {/* Add Product Row Button */}
+              {/* Tombol Tambah Baris Produk */}
               <button
                 type="button"
                 onClick={handleAddProductRow}
                 className="w-full py-2 px-4 border border-dashed border-border rounded-xl text-accent hover:bg-secondary/50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
               >
                 <Plus className="w-4 h-4" />
-                Add Product
+                Tambahkan Produk
               </button>
             </div>
 
-            {/* Submit Button */}
+            {/* Tombol Submit */}
             <button
               type="submit"
               className="w-full bg-primary hover:bg-primary/80 text-primary-foreground py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg"
             >
-              Record Incoming Goods
+              Simpan Barang Masuk
             </button>
           </form>
         </div>
