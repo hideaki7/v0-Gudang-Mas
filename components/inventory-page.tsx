@@ -53,8 +53,8 @@ export function InventoryPage() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Inventory Management</h1>
-        <p className="text-muted-foreground">Manage and track all warehouse products</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Manajemen Stok</h1>
+        <p className="text-muted-foreground">saka jawa</p>
       </div>
 
       {/* Search Bar */}

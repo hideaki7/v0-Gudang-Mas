@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Filter, Download } from 'lucide-react'
+import { Search, Download, Plus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface ReturnItem {
@@ -53,7 +53,8 @@ const returnHistoryData: ReturnItem[] = [
   },
 ]
 
-export function ReturnHistory() {
+// Tambahkan onAddReturn ke dalam props agar bisa dipicu dari dashboard.tsx
+export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu' | 'Disetujui' | 'Ditolak'>('Semua')
 
@@ -98,17 +99,29 @@ export function ReturnHistory() {
   }
 
   return (
-    <div className="p-8 space-y-8">
-      {/* Header */}
+    <div className="p-8 space-y-8 w-full"> {/* Gunakan w-full untuk mengatasi ruang kosong */}
+      {/* Header Halaman */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Riwayat Retur</h1>
           <p className="text-muted-foreground">Pantau status seluruh pengembalian produk Anda.</p>
         </div>
-        <button className="bg-secondary/50 hover:bg-secondary text-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border">
-          <Download className="w-5 h-5" />
-          Ekspor Laporan
-        </button>
+
+        {/* Bagian Tombol Aksi */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onAddReturn}
+            className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Ajukan Retur Baru
+          </button>
+
+          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border">
+            <Download className="w-5 h-5" />
+            Ekspor Laporan
+          </button>
+        </div>
       </div>
 
       {/* Kartu Statistik */}
