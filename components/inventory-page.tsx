@@ -53,8 +53,8 @@ export function InventoryPage() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Manajemen Stok</h1>
-        <p className="text-muted-foreground">saka jawa</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Inventori Produk</h1>
+        <p className="text-muted-foreground">Pantau ketersediaan, status stok, dan detail kategori seluruh produk gudang dalam satu dasbor.</p>
       </div>
 
       {/* Search Bar */}
