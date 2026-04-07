@@ -29,7 +29,7 @@ const navItems = [
 
 export function Dashboard() {
   const [activeNav, setActiveNav] = useState('dashboard')
-  // State baru untuk mengontrol tampilan antara list riwayat dan form input retur
+  const [isCreatingSupplier, setIsCreatingSupplier] = useState(false);
   const [isCreatingReturn, setIsCreatingReturn] = useState(false)
 
   // Fungsi untuk reset state saat pindah menu utama
