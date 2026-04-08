@@ -17,6 +17,8 @@ import { InventoryPage } from '@/components/inventory-page'
 import { IncomingGoodsPage } from '@/components/incoming-goods-page'
 import { ReportsPage } from '@/components/reports-page'
 import { MasterDashboard } from '@/components/master-dashboard'
+import { UserNav } from '@/components/user-nav'
+import { QuickActions } from '@/components/quick-actions'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 import { SupplierForm } from './supplier-form'
 
@@ -105,10 +107,9 @@ export function Dashboard() {
                 ? 'Pengajuan Retur Baru'
                 : navItems.find((item) => item.value === activeNav)?.label}
           </h2>
-          <div className="flex items-center gap-4">
-            <button className="p-2.5 hover:bg-secondary rounded-xl transition-all duration-200">
-              <Menu className="w-6 h-6 text-accent" />
-            </button>
+          <div className="flex items-center gap-2">
+            <QuickActions lowStockCount={3} pendingReturnsCount={2} />
+            <UserNav />
           </div>
         </header>
 
