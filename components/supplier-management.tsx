@@ -6,46 +6,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 
 const suppliersData = [
-  {
-    id: 'SUP001',
-    name: 'PT Maju Jaya',
-    contact: 'Budi Santoso',
-    category: 'Electronics',
-    shipments: 24,
-    returnRate: 2.5,
-  },
-  {
-    id: 'SUP002',
-    name: 'CV Industri Indonesia',
-    contact: 'Siti Rahayu',
-    category: 'FMCG',
-    shipments: 18,
-    returnRate: 3.2,
-  },
-  {
-    id: 'SUP003',
-    name: 'PT Karya Mitra',
-    contact: 'Ahmad Wijaya',
-    category: 'Machinery',
-    shipments: 15,
-    returnRate: 1.8,
-  },
-  {
-    id: 'SUP004',
-    name: 'Supplier Berkah',
-    contact: 'Dewi Kusuma',
-    category: 'Raw Materials',
-    shipments: 32,
-    returnRate: 2.1,
-  },
-  {
-    id: 'SUP005',
-    name: 'PT Global Trade',
-    contact: 'Rudi Hermawan',
-    category: 'Electronics',
-    shipments: 28,
-    returnRate: 4.5,
-  },
+  { id: 'SUP001', name: 'PT Maju Jaya', contact: 'Budi Santoso', category: 'Electronics', shipments: 24, returnRate: 2.5 },
+  { id: 'SUP002', name: 'CV Industri Indonesia', contact: 'Siti Rahayu', category: 'FMCG', shipments: 18, returnRate: 3.2 },
+  { id: 'SUP003', name: 'PT Karya Mitra', contact: 'Ahmad Wijaya', category: 'Machinery', shipments: 15, returnRate: 1.8 },
+  { id: 'SUP004', name: 'Supplier Berkah', contact: 'Dewi Kusuma', category: 'Raw Materials', shipments: 32, returnRate: 2.1 },
+  { id: 'SUP005', name: 'PT Global Trade', contact: 'Rudi Hermawan', category: 'Electronics', shipments: 28, returnRate: 4.5 },
 ]
 
 const getCategoryColor = (category: string) => {
@@ -58,7 +23,8 @@ const getCategoryColor = (category: string) => {
   return colors[category] || 'bg-gray-500/30 text-gray-300'
 }
 
-export function SupplierManagement() {
+// Tambahkan { onAddSupplier } di sini agar komponen bisa menerima kiriman fungsi dari dashboard
+export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [suppliers] = useState(suppliersData)
 
@@ -70,7 +36,7 @@ export function SupplierManagement() {
   )
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -79,7 +45,11 @@ export function SupplierManagement() {
             Kelola kategori produk dan evaluasi performa pengiriman dari seluruh mitra supplier Anda.
           </p>
         </div>
-        <button className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg">
+        {/* Pasang onAddSupplier pada onClick tombol ini */}
+        <button
+          onClick={onAddSupplier}
+          className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
+        >
           <Plus className="w-5 h-5" />
           Tambah Supplier
         </button>
@@ -91,7 +61,7 @@ export function SupplierManagement() {
           <Search className="w-5 h-5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Cari disini..."
+            placeholder="Cari berdasarkan nama, kontak, atau kategori..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
@@ -99,14 +69,14 @@ export function SupplierManagement() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table Section */}
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-b border-border hover:bg-transparent">
                 <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
-                <TableHead className="text-accent font-semibold">Contact Person</TableHead>
+                <TableHead className="text-accent font-semibold">Kontak Person</TableHead>
                 <TableHead className="text-accent font-semibold">Kategori</TableHead>
                 <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
                 <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
@@ -117,7 +87,7 @@ export function SupplierManagement() {
               {filteredSuppliers.map((supplier) => (
                 <TableRow
                   key={supplier.id}
-                  className="border-b border-border hover:bg-secondary/50 transition-all duration-200 hover:backdrop-blur-xl"
+                  className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
                 >
                   <TableCell>
                     <div className="flex flex-col">
@@ -131,13 +101,11 @@ export function SupplierManagement() {
                       {supplier.category}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-center">
-                    <span className="font-semibold text-foreground">{supplier.shipments}</span>
+                  <TableCell className="text-center font-semibold text-foreground">
+                    {supplier.shipments}
                   </TableCell>
                   <TableCell className="text-center">
-                    <span
-                      className={`font-semibold ${supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}`}
-                    >
+                    <span className={`font-semibold ${supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}`}>
                       {supplier.returnRate}%
                     </span>
                   </TableCell>
@@ -166,7 +134,9 @@ export function SupplierManagement() {
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
           <p className="text-muted-foreground text-sm mb-2">Total Pengiriman</p>
-          <h3 className="text-3xl font-bold text-foreground">{suppliers.reduce((sum, s) => sum + s.shipments, 0)}</h3>
+          <h3 className="text-3xl font-bold text-foreground">
+            {suppliers.reduce((sum, s) => sum + s.shipments, 0)}
+          </h3>
         </div>
         <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
           <p className="text-muted-foreground text-sm mb-2">Rata-rata Retur</p>

@@ -6,74 +6,62 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { Settings, LogOut, Globe, Moon, Sun } from 'lucide-react'
+import { Globe, Moon, Sun } from 'lucide-react'
 
-export function UserNav() {
+export function UserNav({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme()
   const [language, setLanguage] = useState('id')
 
   return (
     <DropdownMenu>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-10 w-10 rounded-lg hover:bg-secondary transition-all duration-200"
-        asChild
+      <DropdownMenuTrigger asChild>
+        {children}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="right"
+        align="end"
+        className="w-64 bg-card backdrop-blur-xl border border-border rounded-xl p-2 shadow-2xl ml-2"
       >
-        <div className="cursor-pointer">
-          <Settings className="h-5 w-5 text-accent" />
-        </div>
-      </Button>
-
-      <DropdownMenuContent align="end" className="w-56 bg-card backdrop-blur-xl border border-border rounded-lg">
-        {/* Profil Grup */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-accent font-semibold">Profil Saya</DropdownMenuLabel>
-          <div className="px-2 py-2 text-sm">
-            <div className="font-medium text-foreground">Samuel Hideaki</div>
-            <div className="text-xs text-muted-foreground">Admin Gudang</div>
+          <DropdownMenuLabel className="text-accent font-bold px-3 py-2">Profil Saya</DropdownMenuLabel>
+          <div className="px-3 pb-3">
+            <div className="font-semibold text-foreground text-base">Samuel Hideaki</div>
+            <div className="text-xs text-muted-foreground italic">Admin Gudang - ITS Warehouse</div>
           </div>
         </DropdownMenuGroup>
-
-        <DropdownMenuSeparator className="bg-border" />
-
-        {/* Bahasa */}
+        <DropdownMenuSeparator className="bg-border/50" />
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-accent font-semibold flex items-center gap-2">
-            <Globe className="w-4 h-4" />
+          <DropdownMenuLabel className="text-foreground font-semibold flex items-center gap-2 px-3">
+            <Globe className="w-4 h-4 text-accent" />
             Bahasa
           </DropdownMenuLabel>
           <DropdownMenuCheckboxItem
             checked={language === 'id'}
             onCheckedChange={() => setLanguage('id')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1"
           >
             Bahasa Indonesia
           </DropdownMenuCheckboxItem>
           <DropdownMenuCheckboxItem
             checked={language === 'en'}
             onCheckedChange={() => setLanguage('en')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1"
           >
             English
           </DropdownMenuCheckboxItem>
         </DropdownMenuGroup>
-
-        <DropdownMenuSeparator className="bg-border" />
-
-        {/* Tema */}
+        <DropdownMenuSeparator className="bg-border/50" />
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-accent font-semibold">Tema</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-foreground font-semibold px-3">Tema Tampilan</DropdownMenuLabel>
           <DropdownMenuCheckboxItem
             checked={theme === 'dark'}
             onCheckedChange={() => setTheme('dark')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1"
           >
             <Moon className="w-4 h-4 mr-2" />
             Dark Mode (Default)
@@ -81,21 +69,11 @@ export function UserNav() {
           <DropdownMenuCheckboxItem
             checked={theme === 'light'}
             onCheckedChange={() => setTheme('light')}
-            className="cursor-pointer"
+            className="cursor-pointer rounded-lg mx-1"
           >
             <Sun className="w-4 h-4 mr-2" />
             Light Mode
           </DropdownMenuCheckboxItem>
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator className="bg-border" />
-
-        {/* Logout */}
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="text-destructive cursor-pointer focus:text-destructive focus:bg-destructive/10">
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
