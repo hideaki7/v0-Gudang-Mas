@@ -32,13 +32,13 @@ const navItems = [
 
 export function Dashboard() {
   const [activeNav, setActiveNav] = useState('dashboard')
-  const [isCreatingSupplier, setIsCreatingSupplier] = useState(false);
+  const [isCreatingSupplier, setIsCreatingSupplier] = useState(false)
   const [isCreatingReturn, setIsCreatingReturn] = useState(false)
 
-  // Fungsi untuk reset state saat pindah menu utama
   const handleNavChange = (value: string) => {
     setActiveNav(value)
-    setIsCreatingReturn(false) // Reset form retur jika pindah menu
+    setIsCreatingReturn(false)
+    setIsCreatingSupplier(false)
   }
 
   return (
@@ -58,6 +58,7 @@ export function Dashboard() {
             </div>
           </button>
         </SidebarHeader>
+
         <SidebarContent className="flex-1">
           <SidebarMenu className="space-y-3 px-3">
             {navItems.map((item) => {
@@ -66,9 +67,7 @@ export function Dashboard() {
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
                     onClick={() => handleNavChange(item.value)}
-                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value
-                      ? 'bg-primary text-white shadow-lg'
-                      : 'text-foreground hover:bg-secondary'
+                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value ? 'bg-primary text-white shadow-lg' : 'text-foreground hover:bg-secondary'
                       }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -79,14 +78,20 @@ export function Dashboard() {
             })}
           </SidebarMenu>
         </SidebarContent>
+
+        {/* Bagian bawah Sidebar: Settings & Logout */}
         <div className="border-t border-border p-4 space-y-2">
           <SidebarMenu className="space-y-0">
             <SidebarMenuItem>
-              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
-                <Settings className="w-5 h-5 mr-3" />
-                <span>Settings</span>
-              </SidebarMenuButton>
+              {/* HUBUNGKAN DISINI: Bungkus tombol lama dengan UserNav */}
+              <UserNav>
+                <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
+                  <Settings className="w-5 h-5 mr-3" />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </UserNav>
             </SidebarMenuItem>
+
             <SidebarMenuItem>
               <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
                 <LogOut className="w-5 h-5 mr-3" />
@@ -97,7 +102,6 @@ export function Dashboard() {
         </div>
       </Sidebar>
 
-      {/* Tambahkan w-full untuk memastikan container mengambil ruang maksimal */}
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
         <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
           <h2 className="text-3xl font-bold text-foreground">
@@ -108,12 +112,10 @@ export function Dashboard() {
                 : navItems.find((item) => item.value === activeNav)?.label}
           </h2>
           <div className="flex items-center gap-2">
-            <QuickActions lowStockCount={3} pendingReturnsCount={2} />
-            <UserNav />
+            <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />
           </div>
         </header>
 
-        {/* Tambahkan w-full di sini untuk mengatasi ruang kosong di kanan */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto w-full">
           <div className="w-full">
             {activeNav === 'dashboard' && <MasterDashboard />}
@@ -127,14 +129,11 @@ export function Dashboard() {
             )}
             {activeNav === 'returns' && (
               isCreatingReturn ? (
-                // Kirim fungsi close agar form bisa ditutup
                 <ReturnRequestForm onCancel={() => setIsCreatingReturn(false)} />
               ) : (
-                // Kirim fungsi open agar list riwayat bisa membuka form
                 <ReturnHistory onAddReturn={() => setIsCreatingReturn(true)} />
               )
             )}
-
             {activeNav === 'incoming' && <IncomingGoodsPage />}
             {activeNav === 'reports' && <ReportsPage />}
           </div>

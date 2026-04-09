@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Globe, Moon, Sun } from 'lucide-react'
 
+// Menerima children agar bisa membungkus tombol sidebar yang sudah ada
 export function UserNav({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme()
   const [language, setLanguage] = useState('id')
@@ -22,6 +23,8 @@ export function UserNav({ children }: { children: React.ReactNode }) {
       <DropdownMenuTrigger asChild>
         {children}
       </DropdownMenuTrigger>
+
+      {/* Muncul ke samping kanan sidebar agar tidak menutupi menu */}
       <DropdownMenuContent
         side="right"
         align="end"
@@ -34,7 +37,10 @@ export function UserNav({ children }: { children: React.ReactNode }) {
             <div className="text-xs text-muted-foreground italic">Admin Gudang - ITS Warehouse</div>
           </div>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator className="bg-border/50" />
+
+        {/* Pengaturan Bahasa */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-foreground font-semibold flex items-center gap-2 px-3">
             <Globe className="w-4 h-4 text-accent" />
@@ -55,7 +61,10 @@ export function UserNav({ children }: { children: React.ReactNode }) {
             English
           </DropdownMenuCheckboxItem>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator className="bg-border/50" />
+
+        {/* Pengaturan Tema */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-foreground font-semibold px-3">Tema Tampilan</DropdownMenuLabel>
           <DropdownMenuCheckboxItem

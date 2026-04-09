@@ -23,7 +23,6 @@ const getCategoryColor = (category: string) => {
   return colors[category] || 'bg-gray-500/30 text-gray-300'
 }
 
-// Tambahkan { onAddSupplier } di sini agar komponen bisa menerima kiriman fungsi dari dashboard
 export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [suppliers] = useState(suppliersData)
@@ -37,15 +36,11 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
 
   return (
     <div className="p-8 space-y-8 w-full">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Daftar Supplier</h1>
-          <p className="text-muted-foreground">
-            Kelola kategori produk dan evaluasi performa pengiriman dari seluruh mitra supplier Anda.
-          </p>
+          <p className="text-muted-foreground">Kelola mitra supplier dan pantau performa pengiriman mereka.</p>
         </div>
-        {/* Pasang onAddSupplier pada onClick tombol ini */}
         <button
           onClick={onAddSupplier}
           className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
@@ -55,95 +50,60 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
         </button>
       </div>
 
-      {/* Search Bar */}
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-        <div className="flex items-center gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3">
+        <div className="flex items-center gap-3 bg-secondary/50 border border-border rounded-xl px-4 py-3">
           <Search className="w-5 h-5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Cari berdasarkan nama, kontak, atau kategori..."
+            placeholder="Cari disini..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
+            className="flex-1 bg-transparent text-foreground outline-none"
           />
         </div>
       </div>
 
-      {/* Table Section */}
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-b border-border hover:bg-transparent">
-                <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
-                <TableHead className="text-accent font-semibold">Kontak Person</TableHead>
-                <TableHead className="text-accent font-semibold">Kategori</TableHead>
-                <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
-                <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
-                <TableHead className="text-accent font-semibold text-center">Aksi</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border hover:bg-transparent">
+              <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
+              <TableHead className="text-accent font-semibold">Contact Person</TableHead>
+              <TableHead className="text-accent font-semibold">Kategori</TableHead>
+              <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
+              <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
+              <TableHead className="text-accent font-semibold text-center">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredSuppliers.map((supplier) => (
+              <TableRow key={supplier.id} className="border-b border-border hover:bg-secondary/50">
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-foreground">{supplier.name}</span>
+                    <span className="text-xs text-muted-foreground">{supplier.id}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-foreground">{supplier.contact}</TableCell>
+                <TableCell>
+                  <Badge className={`${getCategoryColor(supplier.category)} border-0 rounded-lg`}>
+                    {supplier.category}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center font-semibold text-foreground">{supplier.shipments}</TableCell>
+                <TableCell className="text-center font-semibold">
+                  <span className={supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}>{supplier.returnRate}%</span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-center gap-3">
+                    <button className="p-2 hover:bg-secondary rounded-lg transition-colors"><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
+                    <button className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"><Trash2 className="w-4 h-4 text-muted-foreground" /></button>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSuppliers.map((supplier) => (
-                <TableRow
-                  key={supplier.id}
-                  className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
-                >
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-foreground">{supplier.name}</span>
-                      <span className="text-xs text-muted-foreground">{supplier.id}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-foreground">{supplier.contact}</TableCell>
-                  <TableCell>
-                    <Badge className={`${getCategoryColor(supplier.category)} border-0 rounded-lg`}>
-                      {supplier.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center font-semibold text-foreground">
-                    {supplier.shipments}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <span className={`font-semibold ${supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}`}>
-                      {supplier.returnRate}%
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-center gap-3">
-                      <button className="p-2 hover:bg-secondary/70 rounded-lg transition-colors text-muted-foreground hover:text-foreground">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 hover:bg-destructive/20 rounded-lg transition-colors text-muted-foreground hover:text-destructive">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Total Supplier</p>
-          <h3 className="text-3xl font-bold text-foreground">{suppliers.length}</h3>
-        </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Total Pengiriman</p>
-          <h3 className="text-3xl font-bold text-foreground">
-            {suppliers.reduce((sum, s) => sum + s.shipments, 0)}
-          </h3>
-        </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Rata-rata Retur</p>
-          <h3 className="text-3xl font-bold text-accent">
-            {(suppliers.reduce((sum, s) => sum + s.returnRate, 0) / suppliers.length).toFixed(2)}%
-          </h3>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )
