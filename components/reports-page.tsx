@@ -132,7 +132,7 @@ export function ReportsPage() {
                     <div className="flex items-center gap-2">
                       <div className="w-16 h-2 bg-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-destructive to-orange-500"
+                          className="h-full bg-linear-to-r from-destructive to-orange-500"
                           style={{ width: `${Math.min(parseFloat(item.returnRate) * 12.5, 100)}%` }}
                         />
                       </div>

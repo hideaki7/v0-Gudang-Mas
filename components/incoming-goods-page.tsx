@@ -98,10 +98,10 @@ export function IncomingGoodsPage() {
                     </div>
                     <Badge
                       className={`border-0 rounded-lg text-[10px] px-2 py-0.5 ${shipment.status === 'Diterima'
-                          ? 'bg-emerald-500/30 text-emerald-300'
-                          : shipment.status === 'Dalam Perjalanan'
-                            ? 'bg-blue-500/30 text-blue-300'
-                            : 'bg-orange-500/30 text-orange-300'
+                        ? 'bg-emerald-500/30 text-emerald-300'
+                        : shipment.status === 'Dalam Perjalanan'
+                          ? 'bg-blue-500/30 text-blue-300'
+                          : 'bg-orange-500/30 text-orange-300'
                         }`}
                     >
                       {shipment.status}
@@ -147,7 +147,7 @@ export function IncomingGoodsPage() {
 
         {/* Sisi Kanan: Form Input */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-foreground text-accent">Input Barang Baru</h2>
+          <h2 className="text-xl font-bold text-accent">Input Barang Baru</h2>
           <form onSubmit={handleSubmit} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-8 space-y-6">
             {successMessage && (
               <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4 text-emerald-300 text-sm font-medium">
