@@ -89,23 +89,23 @@ export function MasterDashboard() {
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         {metricsData.map((metric, index) => (
-          <div key={index} className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 group hover:bg-slate-700 transition-all duration-300">
+          <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 group hover:backdrop-blur-2xl transition-all duration-300">
             <div className="flex items-start justify-between mb-3 md:mb-4">
               <div>
-                <p className="text-xs md:text-sm text-slate-400 mb-1">{metric.label}</p>
-                <h3 className="text-xl md:text-3xl font-bold text-white">{metric.value}</h3>
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">{metric.label}</p>
+                <h3 className="text-xl md:text-3xl font-bold text-foreground">{metric.value}</h3>
               </div>
               <span className="text-2xl md:text-4xl opacity-60 group-hover:opacity-100 transition-opacity">{metric.icon}</span>
             </div>
-            <div className="flex items-center justify-between pt-2 border-t border-slate-700">
-              <p className="text-xs text-slate-400">{metric.subtitle}</p>
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
               <div className="flex items-center gap-1">
                 {metric.positive ? (
-                  <ArrowUp className="w-3 h-3 text-emerald-400" />
+                  <ArrowUp className="w-3 h-3 text-accent" />
                 ) : (
-                  <ArrowDown className="w-3 h-3 text-red-400" />
+                  <ArrowDown className="w-3 h-3 text-destructive" />
                 )}
-                <span className={`text-xs font-semibold ${metric.positive ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className={`text-xs font-semibold ${metric.positive ? 'text-accent' : 'text-destructive'}`}>
                   {metric.change}
                 </span>
               </div>
@@ -117,9 +117,9 @@ export function MasterDashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         {/* Trend Chart */}
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 lg:col-span-2">
-          <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Tren Barang Masuk & Retur</h3>
-          <p className="text-xs md:text-sm text-slate-400 mb-4 md:mb-6">Pergerakan penerimaan dan pengembalian 6 bulan terakhir</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 lg:col-span-2">
+          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Tren Barang Masuk & Retur</h3>
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Pergerakan penerimaan dan pengembalian 6 bulan terakhir</p>
           <ResponsiveContainer width="100%" height={200} className="sm:h-72 lg:h-80">
             <LineChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
@@ -158,9 +158,9 @@ export function MasterDashboard() {
         </div>
 
         {/* Stock Distribution Pie Chart */}
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Distribusi Stok</h3>
-          <p className="text-xs md:text-sm text-slate-400 mb-4 md:mb-6">Persentase status stok produk</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Distribusi Stok</h3>
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Persentase status stok produk</p>
           <ResponsiveContainer width="100%" height={200} className="sm:h-72 lg:h-80">
             <PieChart>
               <Pie
@@ -195,9 +195,9 @@ export function MasterDashboard() {
       {/* Tables Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         {/* Top Suppliers Table */}
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Performa Supplier</h3>
-          <p className="text-xs md:text-sm text-slate-400 mb-4 md:mb-6">Daftar supplier dengan tingkat retur tertinggi</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Performa Supplier</h3>
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Daftar supplier dengan tingkat retur tertinggi</p>
           <div className="overflow-x-auto">
             <Table className="text-sm md:text-base">
               <TableHeader>
@@ -230,9 +230,9 @@ export function MasterDashboard() {
         </div>
 
         {/* Recent Activity Table */}
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Aktivitas Terbaru</h3>
-          <p className="text-xs md:text-sm text-slate-400 mb-4 md:mb-6">Riwayat transaksi gudang terkini</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Aktivitas Terbaru</h3>
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Riwayat transaksi gudang terkini</p>
           <div className="overflow-x-auto">
             <Table className="text-sm md:text-base">
               <TableHeader>

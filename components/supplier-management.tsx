@@ -51,20 +51,20 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
         </button>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6">
-        <div className="flex items-center gap-2 md:gap-3 bg-slate-700 border border-slate-600 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3">
-          <Search className="w-4 h-4 md:w-5 md:h-5 text-slate-400 flex-shrink-0" />
+      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6">
+        <div className="flex items-center gap-2 md:gap-3 bg-secondary/50 border border-border rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3">
+          <Search className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground flex-shrink-0" />
           <input
             type="text"
             placeholder="Cari disini..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-transparent text-sm md:text-base text-white placeholder-slate-400 outline-none"
+            className="flex-1 bg-transparent text-sm md:text-base text-foreground placeholder-muted-foreground outline-none"
           />
         </div>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 overflow-x-auto">
+      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 overflow-x-auto">
         <Table className="text-xs md:text-sm">
           <TableHeader>
             <TableRow className="border-b border-border hover:bg-transparent">
