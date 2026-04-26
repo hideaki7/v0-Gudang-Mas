@@ -58,21 +58,21 @@ export function InventoryPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6">
-        <div className="flex items-center gap-2 md:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3">
-          <Search className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground flex-shrink-0" />
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6">
+        <div className="flex items-center gap-2 md:gap-3 bg-slate-700 border border-slate-600 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3">
+          <Search className="w-4 h-4 md:w-5 md:h-5 text-slate-400 flex-shrink-0" />
           <input
             type="text"
             placeholder="Cari disini..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-sm md:text-base text-foreground placeholder-muted-foreground outline-none"
+            className="flex-1 bg-transparent text-sm md:text-base text-white placeholder-slate-400 outline-none"
           />
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 overflow-x-auto">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 overflow-x-auto">
         <Table className="text-xs md:text-sm">
           <TableHeader>
             <TableRow className="border-b border-border hover:bg-transparent">
@@ -117,17 +117,17 @@ export function InventoryPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Produk</p>
-          <h3 className="text-xl md:text-3xl font-bold text-foreground">{inventoryData.length}</h3>
+        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <p className="text-xs md:text-sm text-slate-400 mb-1 md:mb-2">Total Produk</p>
+          <h3 className="text-xl md:text-3xl font-bold text-white">{inventoryData.length}</h3>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Jumlah Stok Aman</p>
-          <h3 className="text-xl md:text-3xl font-bold text-accent">{inventoryData.filter((i) => i.status === 'In Stock').length}</h3>
+        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <p className="text-xs md:text-sm text-slate-400 mb-1 md:mb-2">Jumlah Stok Aman</p>
+          <h3 className="text-xl md:text-3xl font-bold text-emerald-400">{inventoryData.filter((i) => i.status === 'In Stock').length}</h3>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Stok Sedikit</p>
-          <h3 className="text-xl md:text-3xl font-bold text-destructive">{inventoryData.filter((i) => i.status === 'Low Stock').length}</h3>
+        <div className="bg-slate-800 border border-slate-700 rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
+          <p className="text-xs md:text-sm text-slate-400 mb-1 md:mb-2">Stok Sedikit</p>
+          <h3 className="text-xl md:text-3xl font-bold text-red-400">{inventoryData.filter((i) => i.status === 'Low Stock').length}</h3>
         </div>
       </div>
     </div>

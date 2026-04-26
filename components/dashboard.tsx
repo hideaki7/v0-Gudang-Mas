@@ -34,11 +34,13 @@ export function Dashboard() {
   const [activeNav, setActiveNav] = useState('dashboard')
   const [isCreatingSupplier, setIsCreatingSupplier] = useState(false)
   const [isCreatingReturn, setIsCreatingReturn] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const handleNavChange = (value: string) => {
     setActiveNav(value)
     setIsCreatingReturn(false)
     setIsCreatingSupplier(false)
+    setIsSidebarOpen(false)
   }
 
   return (
@@ -103,18 +105,69 @@ export function Dashboard() {
       </Sidebar>
 
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
-        <header className="sticky top-0 flex h-16 md:h-20 shrink-0 items-center justify-between px-4 md:px-8 z-40 bg-card/50 backdrop-blur-sm border-b border-border">
-          <h2 className="text-lg md:text-3xl font-bold text-foreground truncate">
-            {activeNav === 'dashboard'
-              ? 'Dashboard Utama'
-              : isCreatingReturn && activeNav === 'returns'
-                ? 'Pengajuan Retur Baru'
-                : navItems.find((item) => item.value === activeNav)?.label}
-          </h2>
+        <header className="sticky top-0 flex h-16 md:h-20 shrink-0 items-center justify-between px-4 md:px-8 z-50 bg-slate-800 border-b border-slate-700">
+          <div className="flex items-center gap-3 md:gap-0">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="md:hidden p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            >
+              <Menu className="w-6 h-6 text-white" />
+            </button>
+            <h2 className="text-lg md:text-3xl font-bold text-white truncate">
+              {activeNav === 'dashboard'
+                ? 'Dashboard Utama'
+                : isCreatingReturn && activeNav === 'returns'
+                  ? 'Pengajuan Retur Baru'
+                  : navItems.find((item) => item.value === activeNav)?.label}
+            </h2>
+          </div>
           <div className="flex items-center gap-2 md:gap-4">
             <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />
           </div>
         </header>
+
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 md:hidden z-40"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Mobile Sidebar */}
+        <div
+          className={`fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-slate-900 border-r border-slate-700 transform transition-transform duration-200 md:hidden z-40 ${
+            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="p-4 space-y-2">
+            <button
+              onClick={() => handleNavChange('dashboard')}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors text-left text-white"
+            >
+              <Package2 className="w-5 h-5 flex-shrink-0" />
+              <span>GudangMas</span>
+            </button>
+            <div className="h-px bg-slate-700 my-2" />
+            {navItems.map((item) => {
+              const Icon = item.icon
+              return (
+                <button
+                  key={item.value}
+                  onClick={() => handleNavChange(item.value)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    activeNav === item.value
+                      ? 'bg-orange-500 text-white'
+                      : 'text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <span>{item.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto w-full">
           <div className="w-full">
