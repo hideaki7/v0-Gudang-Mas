@@ -99,74 +99,76 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   }
 
   return (
-    <div className="p-8 space-y-8 w-full"> {/* Gunakan w-full untuk mengatasi ruang kosong */}
+    <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 lg:space-y-8 w-full">
       {/* Header Halaman */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Riwayat Retur</h1>
-          <p className="text-muted-foreground">Kelola pengajuan retur serta status persetujuannya secara transparan.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Riwayat Retur</h1>
+          <p className="text-xs md:text-sm lg:text-base text-muted-foreground">Kelola pengajuan retur serta status persetujuannya secara transparan.</p>
         </div>
 
         {/* Bagian Tombol Aksi */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
           <button
             onClick={onAddReturn}
-            className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
+            className="bg-primary hover:bg-primary/80 text-white px-3 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl flex items-center justify-center sm:justify-start gap-2 transition-all duration-200 font-semibold md:font-medium text-xs md:text-sm shadow-lg"
           >
-            <Plus className="w-5 h-5" />
-            Ajukan Retur Baru
+            <Plus className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+            <span className="hidden sm:inline">Ajukan Retur Baru</span>
+            <span className="sm:hidden">Retur Baru</span>
           </button>
 
-          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border">
-            <Download className="w-5 h-5" />
-            Ekspor Laporan
+          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-3 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl flex items-center justify-center sm:justify-start gap-2 transition-all duration-200 font-semibold md:font-medium text-xs md:text-sm border border-border">
+            <Download className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+            <span className="hidden md:inline">Ekspor Laporan</span>
+            <span className="md:hidden">Ekspor</span>
           </button>
         </div>
       </div>
 
       {/* Kartu Statistik */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-muted-foreground text-sm mb-2">Total Retur</p>
-          <h3 className="text-3xl font-bold text-foreground">{stats.total}</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-4 lg:gap-6">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-lg md:rounded-3xl shadow-lg p-3 md:p-6">
+          <p className="text-muted-foreground text-xs md:text-sm mb-1 md:mb-2">Total Retur</p>
+          <h3 className="text-lg md:text-3xl font-bold text-foreground">{stats.total}</h3>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 border-l-4 border-l-yellow-500">
-          <p className="text-muted-foreground text-sm mb-2">Menunggu</p>
-          <h3 className="text-3xl font-bold text-yellow-300">{stats.pending}</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-lg md:rounded-3xl shadow-lg p-3 md:p-6 border-l-4 border-l-yellow-500">
+          <p className="text-muted-foreground text-xs md:text-sm mb-1 md:mb-2">Menunggu</p>
+          <h3 className="text-lg md:text-3xl font-bold text-yellow-300">{stats.pending}</h3>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 border-l-4 border-l-emerald-500">
-          <p className="text-muted-foreground text-sm mb-2">Disetujui</p>
-          <h3 className="text-3xl font-bold text-emerald-300">{stats.approved}</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-lg md:rounded-3xl shadow-lg p-3 md:p-6 border-l-4 border-l-emerald-500">
+          <p className="text-muted-foreground text-xs md:text-sm mb-1 md:mb-2">Disetujui</p>
+          <h3 className="text-lg md:text-3xl font-bold text-emerald-300">{stats.approved}</h3>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 border-l-4 border-l-red-500">
-          <p className="text-muted-foreground text-sm mb-2">Ditolak</p>
-          <h3 className="text-3xl font-bold text-red-300">{stats.rejected}</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-lg md:rounded-3xl shadow-lg p-3 md:p-6 border-l-4 border-l-red-500">
+          <p className="text-muted-foreground text-xs md:text-sm mb-1 md:mb-2">Ditolak</p>
+          <h3 className="text-lg md:text-3xl font-bold text-red-300">{stats.rejected}</h3>
         </div>
       </div>
 
       {/* Filter Pencarian */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end">
+      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 space-y-3 md:space-y-4">
+        <div className="flex flex-col gap-3 md:gap-4 lg:flex-row lg:items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-foreground mb-2">Cari Retur</label>
-            <div className="flex items-center gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3">
-              <Search className="w-5 h-5 text-muted-foreground" />
+            <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5 md:mb-2">Cari Retur</label>
+            <div className="flex items-center gap-2 md:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3">
+              <Search className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Cari disini..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
+                className="flex-1 bg-transparent text-xs md:text-sm text-foreground placeholder-muted-foreground outline-none"
               />
             </div>
           </div>
 
           <div className="w-full lg:w-64">
-            <label className="block text-sm font-medium text-foreground mb-2">Filter Status</label>
+            <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5 md:mb-2">Filter Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground outline-none focus:border-accent transition-colors"
+              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm text-foreground outline-none focus:border-accent transition-colors"
             >
               <option value="Semua">Semua Status</option>
               <option value="Menunggu">Menunggu</option>
@@ -178,47 +180,47 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
       </div>
 
       {/* Daftar Item Retur */}
-      <div className="space-y-4">
+      <div className="space-y-2 md:space-y-4">
         {filteredData.length > 0 ? (
           filteredData.map((item) => (
             <div
               key={item.id}
-              className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 hover:shadow-xl hover:border-accent/50 transition-all duration-200 hover:backdrop-blur-2xl"
+              className="bg-card backdrop-blur-xl border border-border rounded-xl md:rounded-3xl shadow-lg p-3 md:p-6 hover:shadow-xl hover:border-accent/50 transition-all duration-200 hover:backdrop-blur-2xl"
             >
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div className="flex-1 space-y-3">
-                  <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4">
+                <div className="flex-1 space-y-2 md:space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
                     <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-bold text-foreground">{item.productName}</h3>
-                        <Badge className="bg-secondary/70 text-muted-foreground border-0 rounded-lg">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                        <h3 className="text-sm md:text-lg font-bold text-foreground">{item.productName}</h3>
+                        <Badge className="bg-secondary/70 text-muted-foreground border-0 rounded-lg text-xs">
                           {item.id}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{item.supplier}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{item.supplier}</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3 md:gap-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Alasan Retur</p>
-                      <p className="text-sm font-medium text-foreground">{item.reason}</p>
+                      <p className="text-xs md:text-sm font-medium text-foreground">{item.reason}</p>
                     </div>
-                    <div className="hidden sm:block w-px h-8 bg-border"></div>
+                    <div className="hidden sm:block w-px h-6 md:h-8 bg-border"></div>
                     <div>
                       <p className="text-xs text-muted-foreground">Kuantitas</p>
-                      <p className="text-sm font-medium text-foreground">{item.quantity} Unit</p>
+                      <p className="text-xs md:text-sm font-medium text-foreground">{item.quantity} Unit</p>
                     </div>
-                    <div className="hidden sm:block w-px h-8 bg-border"></div>
+                    <div className="hidden sm:block w-px h-6 md:h-8 bg-border"></div>
                     <div>
                       <p className="text-xs text-muted-foreground">Diajukan pada</p>
-                      <p className="text-sm font-medium text-foreground">{item.timestamp}</p>
+                      <p className="text-xs md:text-sm font-medium text-foreground">{item.timestamp}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end lg:justify-start">
-                  <Badge className={`${getStatusStyles(item.status)} rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 min-w-fit`}>
+                <div className="flex items-center justify-start lg:justify-end">
+                  <Badge className={`${getStatusStyles(item.status)} rounded-lg px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold flex items-center gap-1.5 md:gap-2 min-w-fit`}>
                     <span>{getStatusIcon(item.status)}</span>
                     <span>{item.status}</span>
                   </Badge>
@@ -227,14 +229,14 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
             </div>
           ))
         ) : (
-          <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-12 text-center">
-            <p className="text-muted-foreground mb-2">Tidak ada data retur</p>
-            <p className="text-sm text-muted-foreground">Coba sesuaikan pencarian atau filter Anda.</p>
+          <div className="bg-card backdrop-blur-xl border border-border rounded-xl md:rounded-3xl shadow-lg p-6 md:p-12 text-center">
+            <p className="text-muted-foreground mb-1 md:mb-2 text-sm">Tidak ada data retur</p>
+            <p className="text-xs md:text-sm text-muted-foreground">Coba sesuaikan pencarian atau filter Anda.</p>
           </div>
         )}
       </div>
 
-      <div className="text-sm text-muted-foreground text-center">
+      <div className="text-xs md:text-sm text-muted-foreground text-center">
         Menampilkan {filteredData.length} dari {returnHistoryData.length} retur
       </div>
     </div>
