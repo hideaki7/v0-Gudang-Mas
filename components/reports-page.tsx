@@ -34,31 +34,30 @@ const topReturnSuppliers = [
 
 export function ReportsPage() {
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 lg:space-y-8">
+    <div className="p-8 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Analisis & Laporan</h1>
-          <p className="text-xs md:text-sm lg:text-base text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Analisis & Laporan</h1>
+          <p className="text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
         </div>
-        <button className="flex items-center justify-center sm:justify-start gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-semibold text-sm md:text-base transition-all duration-200 shadow-lg whitespace-nowrap">
-          <Download className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
-          <span className="hidden sm:inline">Ekspor Laporan</span>
-          <span className="sm:hidden">Ekspor</span>
+        <button className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg">
+          <Download className="w-5 h-5" />
+          Ekspor Laporan
         </button>
       </div>
 
       {/* Grid Grafik */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Grafik Performa Supplier */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h2 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Performa Supplier</h2>
-          <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-6">Perbandingan tingkat retur dan kualitas per supplier</p>
-          <ResponsiveContainer width="100%" height={200} style={{ minHeight: '200px' }}>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <h2 className="text-lg font-bold text-foreground mb-2">Performa Supplier</h2>
+          <p className="text-sm text-muted-foreground mb-6">Perbandingan tingkat retur dan kualitas per supplier</p>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart data={supplierPerformanceData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-              <XAxis dataKey="name" fontSize={10} stroke="#9ca3af" angle={-45} textAnchor="end" height={80} />
-              <YAxis fontSize={11} stroke="#9ca3af" />
+              <XAxis dataKey="name" fontSize={11} stroke="#9ca3af" angle={-45} textAnchor="end" height={100} />
+              <YAxis fontSize={12} stroke="#9ca3af" />
               <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '12px' }} />
               <Legend />
               <Bar dataKey="retur" name="Total Retur" fill="#14b8a6" radius={[12, 12, 0, 0]} />
@@ -69,10 +68,10 @@ export function ReportsPage() {
         </div>
 
         {/* Grafik Tren Retur Bulanan */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h2 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Tren Retur Bulanan</h2>
-          <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-6">Data pengembalian selama 6 bulan terakhir</p>
-          <ResponsiveContainer width="100%" height={200} style={{ minHeight: '200px' }}>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <h2 className="text-lg font-bold text-foreground mb-2">Tren Retur Bulanan</h2>
+          <p className="text-sm text-muted-foreground mb-6">Data pengembalian selama 6 bulan terakhir</p>
+          <ResponsiveContainer width="100%" height={280}>
             <LineChart data={monthlyReturnTrendData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
               <XAxis dataKey="month" fontSize={12} stroke="#9ca3af" />
@@ -88,59 +87,59 @@ export function ReportsPage() {
       </div>
 
       {/* Kartu Ringkasan Statistik */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Retur (Bulan Ini)</p>
-          <h3 className="text-xl md:text-3xl font-bold text-orange-400">52</h3>
-          <p className="text-xs text-orange-300 mt-1 md:mt-2">+15% dari bulan lalu</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <p className="text-sm text-muted-foreground mb-2">Total Retur (Bulan Ini)</p>
+          <h3 className="text-3xl font-bold text-orange-400">52</h3>
+          <p className="text-xs text-orange-300 mt-2">+15% dari bulan lalu</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Tingkat Persetujuan</p>
-          <h3 className="text-xl md:text-3xl font-bold text-emerald-400">82.7%</h3>
-          <p className="text-xs text-emerald-300 mt-1 md:mt-2">43 dari 52 retur disetujui</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <p className="text-sm text-muted-foreground mb-2">Tingkat Persetujuan</p>
+          <h3 className="text-3xl font-bold text-emerald-400">82.7%</h3>
+          <p className="text-xs text-emerald-300 mt-2">43 dari 52 retur disetujui</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Rata-rata Resolusi</p>
-          <h3 className="text-xl md:text-3xl font-bold text-blue-400">3.2 Hari</h3>
-          <p className="text-xs text-blue-300 mt-1 md:mt-2">Waktu proses pengerjaan</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <p className="text-sm text-muted-foreground mb-2">Rata-rata Resolusi</p>
+          <h3 className="text-3xl font-bold text-blue-400">3.2 Hari</h3>
+          <p className="text-xs text-blue-300 mt-2">Waktu proses pengerjaan</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Supplier Aktif</p>
-          <h3 className="text-xl md:text-3xl font-bold text-accent">5</h3>
-          <p className="text-xs text-accent mt-1 md:mt-2">Supplier dengan retur bulan ini</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <p className="text-sm text-muted-foreground mb-2">Supplier Aktif</p>
+          <h3 className="text-3xl font-bold text-accent">5</h3>
+          <p className="text-xs text-accent mt-2">Supplier dengan retur bulan ini</p>
         </div>
       </div>
 
       {/* Tabel Supplier dengan Retur Terbanyak */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-        <h2 className="text-base md:text-lg font-bold text-foreground mb-4 md:mb-6">Supplier dengan Retur Terbanyak</h2>
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+        <h2 className="text-lg font-bold text-foreground mb-6">Supplier dengan Retur Terbanyak</h2>
         <div className="overflow-x-auto">
-          <Table className="text-xs md:text-sm">
+          <Table>
             <TableHeader>
               <TableRow className="border-b border-border hover:bg-transparent">
-                <TableHead className="text-accent font-semibold text-xs md:text-sm">Supplier</TableHead>
-                <TableHead className="text-accent font-semibold text-xs md:text-sm">Jumlah Retur</TableHead>
-                <TableHead className="text-accent font-semibold text-xs md:text-sm hidden md:table-cell">Tingkat Retur</TableHead>
-                <TableHead className="text-accent font-semibold text-xs md:text-sm">Alasan Utama</TableHead>
+                <TableHead className="text-accent font-semibold">Supplier</TableHead>
+                <TableHead className="text-accent font-semibold">Jumlah Retur</TableHead>
+                <TableHead className="text-accent font-semibold">Tingkat Retur</TableHead>
+                <TableHead className="text-accent font-semibold">Alasan Utama</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {topReturnSuppliers.map((item, idx) => (
                 <TableRow key={idx} className="border-b border-border hover:bg-secondary/50 transition-all duration-200">
-                  <TableCell className="text-foreground font-medium text-xs md:text-sm">{item.supplier}</TableCell>
-                  <TableCell className="text-foreground font-bold text-sm md:text-lg">{item.returns}</TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    <div className="flex items-center gap-1.5 md:gap-2">
-                      <div className="w-12 md:w-16 h-2 bg-secondary rounded-full overflow-hidden">
+                  <TableCell className="text-foreground font-medium">{item.supplier}</TableCell>
+                  <TableCell className="text-foreground font-bold text-lg">{item.returns}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-2 bg-secondary rounded-full overflow-hidden">
                         <div
                           className="h-full bg-linear-to-r from-destructive to-orange-500"
                           style={{ width: `${Math.min(parseFloat(item.returnRate) * 12.5, 100)}%` }}
                         />
                       </div>
-                      <span className="text-destructive font-semibold text-xs md:text-sm">{item.returnRate}</span>
+                      <span className="text-destructive font-semibold text-sm">{item.returnRate}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-xs md:text-sm">{item.reason}</TableCell>
+                  <TableCell className="text-muted-foreground text-sm">{item.reason}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

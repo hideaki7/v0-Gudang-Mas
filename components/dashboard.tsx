@@ -43,35 +43,35 @@ export function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background w-full">
-      <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r hidden md:flex md:m-3 flex-col">
-        <SidebarHeader className="border-b border-border p-4 md:p-6">
+      <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
+        <SidebarHeader className="border-b border-border p-6">
           <button
             onClick={() => handleNavChange('dashboard')}
-            className="flex items-center gap-2 md:gap-3 w-full hover:opacity-80 transition-opacity"
+            className="flex items-center gap-3 w-full hover:opacity-80 transition-opacity"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-              <Package2 className="w-5 h-5 md:w-7 md:h-7 text-white" />
+            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+              <Package2 className="w-7 h-7 text-white" />
             </div>
-            <div className="flex flex-col text-left hidden md:flex">
-              <h1 className="font-bold text-base md:text-lg text-foreground">GudangMas</h1>
+            <div className="flex flex-col text-left">
+              <h1 className="font-bold text-lg text-foreground">GudangMas</h1>
               <p className="text-xs text-muted-foreground">Warehouse Manager</p>
             </div>
           </button>
         </SidebarHeader>
 
         <SidebarContent className="flex-1">
-          <SidebarMenu className="space-y-2 md:space-y-3 px-2 md:px-3">
+          <SidebarMenu className="space-y-3 px-3">
             {navItems.map((item) => {
               const Icon = item.icon
               return (
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
                     onClick={() => handleNavChange(item.value)}
-                    className={`w-full justify-start px-3 md:px-4 py-2 md:py-3 rounded-xl transition-all duration-200 text-sm md:text-base ${activeNav === item.value ? 'bg-primary text-white shadow-lg' : 'text-foreground hover:bg-secondary'
+                    className={`w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 ${activeNav === item.value ? 'bg-primary text-white shadow-lg' : 'text-foreground hover:bg-secondary'
                       }`}
                   >
-                    <Icon className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 flex-shrink-0" />
-                    <span className="hidden md:inline">{item.label}</span>
+                    <Icon className="w-5 h-5 mr-3" />
+                    <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )
@@ -80,22 +80,22 @@ export function Dashboard() {
         </SidebarContent>
 
         {/* Bagian bawah Sidebar: Settings & Logout */}
-        <div className="border-t border-border p-3 md:p-4 space-y-2">
+        <div className="border-t border-border p-4 space-y-2">
           <SidebarMenu className="space-y-0">
             <SidebarMenuItem>
               {/* HUBUNGKAN DISINI: Bungkus tombol lama dengan UserNav */}
               <UserNav>
-                <SidebarMenuButton className="w-full justify-start px-3 md:px-4 py-2 text-sm md:text-base text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
-                  <Settings className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 flex-shrink-0" />
-                  <span className="hidden md:inline">Settings</span>
+                <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
+                  <Settings className="w-5 h-5 mr-3" />
+                  <span>Settings</span>
                 </SidebarMenuButton>
               </UserNav>
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton className="w-full justify-start px-3 md:px-4 py-2 text-sm md:text-base text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
-                <LogOut className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 flex-shrink-0" />
-                <span className="hidden md:inline">Logout</span>
+              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
+                <LogOut className="w-5 h-5 mr-3" />
+                <span>Logout</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -103,15 +103,15 @@ export function Dashboard() {
       </Sidebar>
 
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
-        <header className="sticky top-0 flex h-16 md:h-20 shrink-0 items-center justify-between px-4 md:px-8 z-40 bg-card/50 backdrop-blur-sm border-b border-border">
-          <h2 className="text-lg md:text-3xl font-bold text-foreground truncate">
+        <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
+          <h2 className="text-3xl font-bold text-foreground">
             {activeNav === 'dashboard'
               ? 'Dashboard Utama'
               : isCreatingReturn && activeNav === 'returns'
                 ? 'Pengajuan Retur Baru'
                 : navItems.find((item) => item.value === activeNav)?.label}
           </h2>
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2">
             <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />
           </div>
         </header>
