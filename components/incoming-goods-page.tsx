@@ -27,6 +27,7 @@ interface ProductRow {
   quantity: number
 }
 
+// Cukup gunakan satu export di sini
 export function IncomingGoodsPage() {
   const [selectedShipment, setSelectedShipment] = useState<string | null>('SHP-001')
   const [formData, setFormData] = useState({
@@ -69,34 +70,34 @@ export function IncomingGoodsPage() {
   const selectedShipmentData = recentShipments.find((s) => s.id === selectedShipment)
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 lg:space-y-8 w-full">
+    <div className="p-8 space-y-8 w-full">
       {/* Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Manajemen Barang Masuk</h1>
-        <p className="text-xs md:text-sm lg:text-base text-muted-foreground">Catat dan lacak setiap kiriman masuk untuk memastikan jumlah serta kualitas barang sesuai pesanan.</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Manajemen Barang Masuk</h1>
+        <p className="text-muted-foreground">Catat dan lacak setiap kiriman masuk untuk memastikan jumlah serta kualitas barang sesuai pesanan.</p>
       </div>
 
       {/* Split View */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Sisi Kiri: Riwayat Pengiriman */}
-        <div className="space-y-3 md:space-y-4">
-          <h2 className="text-base md:text-xl font-bold text-foreground">Riwayat Pengiriman</h2>
-          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg overflow-hidden">
-            <div className="overflow-y-auto max-h-[300px] md:max-h-[500px]">
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-foreground">Riwayat Pengiriman</h2>
+          <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg overflow-hidden">
+            <div className="overflow-y-auto max-h-[500px]">
               {recentShipments.map((shipment) => (
                 <div
                   key={shipment.id}
                   onClick={() => setSelectedShipment(shipment.id)}
-                  className={`p-3 md:p-5 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment === shipment.id ? 'bg-secondary border-l-4 border-l-primary' : ''
+                  className={`p-5 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment === shipment.id ? 'bg-secondary border-l-4 border-l-primary' : ''
                     }`}
                 >
-                  <div className="flex items-start justify-between mb-1.5 md:mb-2">
+                  <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="font-bold text-foreground text-xs md:text-sm">{shipment.id}</p>
+                      <p className="font-bold text-foreground text-sm">{shipment.id}</p>
                       <p className="text-muted-foreground text-xs">{shipment.supplier}</p>
                     </div>
                     <Badge
-                      className={`border-0 rounded-lg text-[8px] md:text-[10px] px-2 py-0.5 ${shipment.status === 'Diterima'
+                      className={`border-0 rounded-lg text-[10px] px-2 py-0.5 ${shipment.status === 'Diterima'
                         ? 'bg-emerald-500/30 text-emerald-300'
                         : shipment.status === 'Dalam Perjalanan'
                           ? 'bg-blue-500/30 text-blue-300'
@@ -106,9 +107,9 @@ export function IncomingGoodsPage() {
                       {shipment.status}
                     </Badge>
                   </div>
-                  <div className="flex justify-between text-[10px] md:text-xs text-muted-foreground gap-2">
-                    <span className="truncate">{shipment.items} item • {shipment.totalQty} unit</span>
-                    <span className="flex-shrink-0">{shipment.date}</span>
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{shipment.items} item • {shipment.totalQty} total unit</span>
+                    <span>{shipment.date}</span>
                   </div>
                 </div>
               ))}
@@ -117,27 +118,27 @@ export function IncomingGoodsPage() {
 
           {/* Detail Pengiriman Terpilih */}
           {selectedShipmentData && (
-            <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-3 md:p-6 space-y-3 md:space-y-4">
-              <h3 className="font-bold text-sm md:text-base text-foreground border-b border-border pb-2 flex items-center gap-2">
-                <div className="w-1 md:w-1.5 h-3 md:h-4 bg-primary rounded-full flex-shrink-0"></div>
-                <span className="truncate">Detail: {selectedShipmentData.id}</span>
+            <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-4">
+              <h3 className="font-bold text-foreground border-b border-border pb-2 flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-primary rounded-full"></div>
+                Detail Pengiriman: {selectedShipmentData.id}
               </h3>
-              <div className="grid grid-cols-2 gap-2 md:gap-4 text-xs md:text-sm">
+              <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Supplier</span>
-                  <span className="text-foreground font-medium text-xs md:text-sm">{selectedShipmentData.supplier}</span>
+                  <span className="text-foreground font-medium">{selectedShipmentData.supplier}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Tanggal Masuk</span>
-                  <span className="text-foreground font-medium text-xs md:text-sm">{selectedShipmentData.date}</span>
+                  <span className="text-foreground font-medium">{selectedShipmentData.date}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Jumlah Item</span>
-                  <span className="text-foreground font-bold text-xs md:text-sm">{selectedShipmentData.items} Produk</span>
+                  <span className="text-foreground font-bold">{selectedShipmentData.items} Produk</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Total Kuantitas</span>
-                  <span className="text-foreground font-bold text-xs md:text-sm">{selectedShipmentData.totalQty} Unit</span>
+                  <span className="text-foreground font-bold">{selectedShipmentData.totalQty} Unit</span>
                 </div>
               </div>
             </div>
@@ -145,9 +146,9 @@ export function IncomingGoodsPage() {
         </div>
 
         {/* Sisi Kanan: Form Input */}
-        <div className="space-y-3 md:space-y-4">
-          <h2 className="text-base md:text-xl font-bold text-accent">Input Barang Baru</h2>
-          <form onSubmit={handleSubmit} className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-8 space-y-4 md:space-y-6">
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-accent">Input Barang Baru</h2>
+          <form onSubmit={handleSubmit} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-8 space-y-6">
             {successMessage && (
               <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4 text-emerald-300 text-sm font-medium">
                 {successMessage}

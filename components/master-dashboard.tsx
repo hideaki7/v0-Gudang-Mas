@@ -79,23 +79,23 @@ const COLORS = ['#14b8a6', '#f472b6', '#ef4444']
 
 export function MasterDashboard() {
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
+    <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">Overview</h1>
-        <p className="text-sm md:text-base text-muted-foreground">Pantau performa gudang dan manajemen stok Anda.</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">Overview</h1>
+        <p className="text-muted-foreground">Pantau performa gudang dan manajemen stok Anda.</p>
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {metricsData.map((metric, index) => (
-          <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 group hover:backdrop-blur-2xl transition-all duration-300">
-            <div className="flex items-start justify-between mb-3 md:mb-4">
+          <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 group hover:backdrop-blur-2xl transition-all duration-300">
+            <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-xs md:text-sm text-muted-foreground mb-1">{metric.label}</p>
-                <h3 className="text-xl md:text-3xl font-bold text-foreground">{metric.value}</h3>
+                <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
+                <h3 className="text-3xl font-bold text-foreground">{metric.value}</h3>
               </div>
-              <span className="text-2xl md:text-4xl opacity-60 group-hover:opacity-100 transition-opacity">{metric.icon}</span>
+              <span className="text-4xl opacity-60 group-hover:opacity-100 transition-opacity">{metric.icon}</span>
             </div>
             <div className="flex items-center justify-between pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
@@ -115,12 +115,12 @@ export function MasterDashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Trend Chart */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6 lg:col-span-2">
-          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Tren Barang Masuk & Retur</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Pergerakan penerimaan dan pengembalian 6 bulan terakhir</p>
-          <ResponsiveContainer width="100%" height={200} className="sm:h-72 lg:h-80">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 lg:col-span-2">
+          <h3 className="text-lg font-bold text-foreground mb-2">Tren Barang Masuk & Retur</h3>
+          <p className="text-sm text-muted-foreground mb-6">Pergerakan penerimaan dan pengembalian 6 bulan terakhir</p>
+          <ResponsiveContainer width="100%" height={280}>
             <LineChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
               <XAxis dataKey="bulan" fontSize={12} stroke="#9ca3af" />
@@ -158,10 +158,10 @@ export function MasterDashboard() {
         </div>
 
         {/* Stock Distribution Pie Chart */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Distribusi Stok</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Persentase status stok produk</p>
-          <ResponsiveContainer width="100%" height={200} className="sm:h-72 lg:h-80">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <h3 className="text-lg font-bold text-foreground mb-2">Distribusi Stok</h3>
+          <p className="text-sm text-muted-foreground mb-6">Persentase status stok produk</p>
+          <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
                 data={stockData}
@@ -193,19 +193,19 @@ export function MasterDashboard() {
       </div>
 
       {/* Tables Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Top Suppliers Table */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Performa Supplier</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Daftar supplier dengan tingkat retur tertinggi</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <h3 className="text-lg font-bold text-foreground mb-2">Performa Supplier</h3>
+          <p className="text-sm text-muted-foreground mb-6">Daftar supplier dengan tingkat retur tertinggi</p>
           <div className="overflow-x-auto">
-            <Table className="text-sm md:text-base">
+            <Table>
               <TableHeader>
                 <TableRow className="border-b border-border hover:bg-transparent">
-                  <TableHead className="text-accent font-semibold text-xs md:text-sm">Supplier</TableHead>
-                  <TableHead className="text-accent font-semibold text-right text-xs md:text-sm hidden sm:table-cell">Pengiriman</TableHead>
-                  <TableHead className="text-accent font-semibold text-right text-xs md:text-sm hidden md:table-cell">Retur</TableHead>
-                  <TableHead className="text-accent font-semibold text-right text-xs md:text-sm">Tingkat %</TableHead>
+                  <TableHead className="text-accent font-semibold">Supplier</TableHead>
+                  <TableHead className="text-accent font-semibold text-right">Pengiriman</TableHead>
+                  <TableHead className="text-accent font-semibold text-right">Retur</TableHead>
+                  <TableHead className="text-accent font-semibold text-right">Tingkat %</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,11 +214,11 @@ export function MasterDashboard() {
                     key={idx}
                     className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
                   >
-                    <TableCell className="text-foreground font-medium text-xs md:text-sm">{supplier.name}</TableCell>
-                    <TableCell className="text-foreground text-right text-xs md:text-sm hidden sm:table-cell">{supplier.shipments}</TableCell>
-                    <TableCell className="text-foreground text-right text-xs md:text-sm hidden md:table-cell">{supplier.returns}</TableCell>
+                    <TableCell className="text-foreground font-medium">{supplier.name}</TableCell>
+                    <TableCell className="text-foreground text-right">{supplier.shipments}</TableCell>
+                    <TableCell className="text-foreground text-right">{supplier.returns}</TableCell>
                     <TableCell className="text-right">
-                      <Badge className={`text-xs ${supplier.returnRate > 10 ? 'bg-destructive/30 text-destructive' : 'bg-accent/30 text-accent'} border-0 rounded-lg`}>
+                      <Badge className={`${supplier.returnRate > 10 ? 'bg-destructive/30 text-destructive' : 'bg-accent/30 text-accent'} border-0 rounded-lg`}>
                         {supplier.returnRate}%
                       </Badge>
                     </TableCell>
@@ -230,17 +230,17 @@ export function MasterDashboard() {
         </div>
 
         {/* Recent Activity Table */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl md:rounded-3xl shadow-lg p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">Aktivitas Terbaru</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">Riwayat transaksi gudang terkini</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
+          <h3 className="text-lg font-bold text-foreground mb-2">Aktivitas Terbaru</h3>
+          <p className="text-sm text-muted-foreground mb-6">Riwayat transaksi gudang terkini</p>
           <div className="overflow-x-auto">
-            <Table className="text-sm md:text-base">
+            <Table>
               <TableHeader>
                 <TableRow className="border-b border-border hover:bg-transparent">
-                  <TableHead className="text-accent font-semibold text-xs md:text-sm">ID</TableHead>
-                  <TableHead className="text-accent font-semibold text-xs md:text-sm hidden sm:table-cell">Tipe</TableHead>
-                  <TableHead className="text-accent font-semibold text-xs md:text-sm hidden md:table-cell">Waktu</TableHead>
-                  <TableHead className="text-accent font-semibold text-xs md:text-sm">Status</TableHead>
+                  <TableHead className="text-accent font-semibold">ID</TableHead>
+                  <TableHead className="text-accent font-semibold">Tipe</TableHead>
+                  <TableHead className="text-accent font-semibold">Waktu</TableHead>
+                  <TableHead className="text-accent font-semibold">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -249,11 +249,11 @@ export function MasterDashboard() {
                     key={idx}
                     className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
                   >
-                    <TableCell className="text-primary font-mono text-xs md:text-sm">{activity.id}</TableCell>
-                    <TableCell className="text-foreground text-xs md:text-sm hidden sm:table-cell">{activity.jenis}</TableCell>
-                    <TableCell className="text-muted-foreground text-xs md:text-sm hidden md:table-cell">{activity.waktu}</TableCell>
+                    <TableCell className="text-primary font-mono text-sm">{activity.id}</TableCell>
+                    <TableCell className="text-foreground">{activity.jenis}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{activity.waktu}</TableCell>
                     <TableCell>
-                      <Badge className={`text-xs ${activity.status === 'Selesai' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-orange-500/30 text-orange-300'} border-0 rounded-lg`}>
+                      <Badge className={`${activity.status === 'Selesai' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-orange-500/30 text-orange-300'} border-0 rounded-lg`}>
                         {activity.status}
                       </Badge>
                     </TableCell>
