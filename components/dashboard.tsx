@@ -43,8 +43,8 @@ export function Dashboard() {
   }
 
   return (
-    <div className="relative flex h-screen bg-background w-full">
-      <Sidebar collapsible="offcanvas" className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3 transition-transform duration-300 ease-in-out max-w-[82vw] md:max-w-none">
+    <div className="flex h-screen bg-background w-full">
+      <Sidebar collapsible="offcanvas" className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3 transition-transform duration-300 ease-in-out">
         <SidebarHeader className="border-b border-border p-6">
           <button
             onClick={() => handleNavChange('dashboard')}
