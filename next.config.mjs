@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'your-api-domain.com', // Ganti dengan domain API asli Anda jika memuat gambar dari luar
+      },
+    ],
   },
 }
 

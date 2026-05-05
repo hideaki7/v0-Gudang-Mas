@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Search } from 'lucide-react'
+import { getCategoryBadgeColor } from '@/lib/utils/colors'
 
 const inventoryData = [
   { sku: 'SKU-001', name: 'Industrial Motor 5HP', category: 'Machinery', stock: 145, unit: 'pieces', status: 'In Stock' },
@@ -21,29 +22,12 @@ const inventoryData = [
 export function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredData = useMemo(() => {
-    return inventoryData.filter(
-      (item) =>
-        item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [searchQuery])
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'Electronics':
-        return 'bg-blue-500/30 text-blue-300'
-      case 'Machinery':
-        return 'bg-purple-500/30 text-purple-300'
-      case 'FMCG':
-        return 'bg-green-500/30 text-green-300'
-      case 'Raw Materials':
-        return 'bg-orange-500/30 text-orange-300'
-      default:
-        return 'bg-gray-500/30 text-gray-300'
-    }
-  }
+  const filteredData = inventoryData.filter(
+    (item) =>
+      item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const getStockStatusColor = (status: string) => {
     return status === 'In Stock' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-red-500/30 text-red-300'
@@ -91,7 +75,7 @@ export function InventoryPage() {
                   <TableCell className="font-mono text-sm text-primary font-semibold">{item.sku}</TableCell>
                   <TableCell className="text-foreground font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge className={`${getCategoryColor(item.category)} border-0 rounded-lg`}>
+                    <Badge className={`${getCategoryBadgeColor(item.category)} border-0 rounded-lg`}>
                       {item.category}
                     </Badge>
                   </TableCell>
@@ -134,4 +118,3 @@ export function InventoryPage() {
   )
 }
 
-export { InventoryPage }

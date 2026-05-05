@@ -41,6 +41,13 @@ export function Dashboard() {
     setIsCreatingSupplier(false)
   }
 
+  const getPageTitle = () => {
+    if (activeNav === 'dashboard') return 'Dashboard Utama'
+    if (activeNav === 'returns' && isCreatingReturn) return 'Pengajuan Retur Baru'
+    if (activeNav === 'suppliers' && isCreatingSupplier) return 'Tambah Supplier Baru'
+    return navItems.find(item => item.value === activeNav)?.label ?? ''
+  }
+
   return (
     <div className="flex h-screen bg-background w-full">
       <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
@@ -105,11 +112,7 @@ export function Dashboard() {
       <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
         <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
           <h2 className="text-3xl font-bold text-foreground">
-            {activeNav === 'dashboard'
-              ? 'Dashboard Utama'
-              : isCreatingReturn && activeNav === 'returns'
-                ? 'Pengajuan Retur Baru'
-                : navItems.find((item) => item.value === activeNav)?.label}
+            {getPageTitle()}
           </h2>
           <div className="flex items-center gap-2">
             <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />

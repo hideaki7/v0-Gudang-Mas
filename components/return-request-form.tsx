@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Upload, X } from 'lucide-react'
 
 interface FormData {
   shipmentId: string
   supplierName: string
   productName: string
-  quantityToReturn: string
+  quantityToReturn: number | ''
   returnReason: string
   photoFile: File | null
 }
@@ -44,6 +44,17 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
+  const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const successTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (submitTimeoutRef.current) clearTimeout(submitTimeoutRef.current)
+      if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
+      if (photoPreview) URL.revokeObjectURL(photoPreview)
+    }
+  }, [photoPreview])
+
   const handleShipmentChange = (shipmentId: string) => {
     const selected = shipmentIds.find((s) => s.id === shipmentId)
     setFormData((prev) => ({
@@ -55,14 +66,24 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      setFormData((prev) => ({ ...prev, photoFile: file }))
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        setPhotoPreview(event.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      alert('Format file tidak didukung. Gunakan JPG, PNG, atau WebP.')
+      return
     }
+
+    if (file.size > MAX_SIZE) {
+      alert('Ukuran file maksimal 5MB.')
+      return
+    }
+
+    setFormData((prev) => ({ ...prev, photoFile: file }))
+    if (photoPreview) URL.revokeObjectURL(photoPreview)
+    setPhotoPreview(URL.createObjectURL(file))
   }
 
   const handleRemovePhoto = () => {
@@ -75,12 +96,12 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     setIsSubmitting(true)
 
     // Simulasi pengiriman data
-    setTimeout(() => {
+    submitTimeoutRef.current = setTimeout(() => {
       setIsSubmitting(false)
       setSubmitSuccess(true)
-      setTimeout(() => {
+      successTimeoutRef.current = setTimeout(() => {
         setSubmitSuccess(false)
-        onCancel(); // Otomatis kembali ke riwayat setelah sukses
+        onCancel()
       }, 2000)
     }, 1000)
   }
@@ -178,9 +199,15 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
               <input
                 type="number"
                 value={formData.quantityToReturn}
-                onChange={(e) => setFormData((prev) => ({ ...prev, quantityToReturn: e.target.value }))}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value)
+                  if (e.target.value === '' || (!isNaN(val) && val > 0 && val <= 99999)) {
+                    setFormData((prev) => ({ ...prev, quantityToReturn: e.target.value === '' ? '' : val }))
+                  }
+                }}
                 placeholder="Masukkan jumlah..."
                 min="1"
+                max="99999"
                 required
                 className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
               />

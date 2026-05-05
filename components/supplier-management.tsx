@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Search, Plus, Edit2, Trash2 } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { getCategoryBadgeColor } from '@/lib/utils/colors'
 
 const suppliersData = [
   { id: 'SUP001', name: 'PT Maju Jaya', contact: 'Budi Santoso', category: 'Electronics', shipments: 24, returnRate: 2.5 },
@@ -13,21 +14,10 @@ const suppliersData = [
   { id: 'SUP005', name: 'PT Global Trade', contact: 'Rudi Hermawan', category: 'Electronics', shipments: 28, returnRate: 4.5 },
 ]
 
-const getCategoryColor = (category: string) => {
-  const colors: Record<string, string> = {
-    Electronics: 'bg-blue-500/30 text-blue-300',
-    FMCG: 'bg-emerald-500/30 text-emerald-300',
-    Machinery: 'bg-orange-500/30 text-orange-300',
-    'Raw Materials': 'bg-purple-500/30 text-purple-300',
-  }
-  return colors[category] || 'bg-gray-500/30 text-gray-300'
-}
-
 export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [suppliers] = useState(suppliersData)
 
-  const filteredSuppliers = suppliers.filter(
+  const filteredSuppliers = suppliersData.filter(
     (supplier) =>
       supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.contact.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -86,7 +76,7 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
                 </TableCell>
                 <TableCell className="text-foreground">{supplier.contact}</TableCell>
                 <TableCell>
-                  <Badge className={`${getCategoryColor(supplier.category)} border-0 rounded-lg`}>
+                  <Badge className={`${getCategoryBadgeColor(supplier.category)} border-0 rounded-lg`}>
                     {supplier.category}
                   </Badge>
                 </TableCell>
@@ -96,8 +86,8 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-center gap-3">
-                    <button className="p-2 hover:bg-secondary rounded-lg transition-colors"><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
-                    <button className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"><Trash2 className="w-4 h-4 text-muted-foreground" /></button>
+                    <button onClick={() => alert('Fitur edit supplier belum tersedia')} className="p-2 hover:bg-secondary rounded-lg transition-colors"><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
+                    <button onClick={() => alert('Fitur hapus supplier belum tersedia')} className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"><Trash2 className="w-4 h-4 text-muted-foreground" /></button>
                   </div>
                 </TableCell>
               </TableRow>
