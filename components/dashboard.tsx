@@ -21,6 +21,7 @@ import { UserNav } from '@/components/user-nav'
 import { QuickActions } from '@/components/quick-actions'
 import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
 import { SupplierForm } from './supplier-form'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 
 const navItems = [
   { icon: Package2, label: 'Stok Barang', value: 'inventory' },
@@ -41,9 +42,16 @@ export function Dashboard() {
     setIsCreatingSupplier(false)
   }
 
+  const getPageTitle = () => {
+    if (activeNav === 'dashboard') return 'Dashboard Utama'
+    if (activeNav === 'returns' && isCreatingReturn) return 'Pengajuan Retur Baru'
+    if (activeNav === 'suppliers' && isCreatingSupplier) return 'Tambah Supplier Baru'
+    return navItems.find(item => item.value === activeNav)?.label ?? ''
+  }
+
   return (
     <div className="flex h-screen bg-background w-full">
-      <Sidebar className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-lg border-r m-3">
+      <Sidebar collapsible="offcanvas" className="!max-w-[260px] bg-card/85 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-2xl border-r m-3 transition-transform duration-300 ease-in-out">
         <SidebarHeader className="border-b border-border p-6">
           <button
             onClick={() => handleNavChange('dashboard')}
@@ -102,22 +110,21 @@ export function Dashboard() {
         </div>
       </Sidebar>
 
-      <SidebarInset className="flex-1 flex flex-col bg-background overflow-auto w-full">
-        <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-8 z-40">
-          <h2 className="text-3xl font-bold text-foreground">
-            {activeNav === 'dashboard'
-              ? 'Dashboard Utama'
-              : isCreatingReturn && activeNav === 'returns'
-                ? 'Pengajuan Retur Baru'
-                : navItems.find((item) => item.value === activeNav)?.label}
-          </h2>
+      <SidebarInset className="flex-1 flex flex-col bg-background min-w-0 overflow-hidden w-full">
+        <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-4 md:px-8 z-40">
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="md:hidden" />
+            <h2 className="text-xl md:text-3xl font-bold text-foreground">
+              {getPageTitle()}
+            </h2>
+          </div>
           <div className="flex items-center gap-2">
             <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full">
-          <div className="w-full">
+        <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto w-full">
+          <div className="w-full min-w-0">
             {activeNav === 'dashboard' && <MasterDashboard />}
             {activeNav === 'inventory' && <InventoryPage />}
             {activeNav === 'suppliers' && (

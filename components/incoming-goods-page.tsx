@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2 } from 'lucide-react'
@@ -38,9 +38,17 @@ export function IncomingGoodsPage() {
     { id: '1', name: '', quantity: 0 },
   ])
   const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
 
   const handleAddProductRow = () => {
-    setProductRows([...productRows, { id: Date.now().toString(), name: '', quantity: 0 }])
+    setProductRows([...productRows, { id: crypto.randomUUID(), name: '', quantity: 0 }])
   }
 
   const handleRemoveProductRow = (id: string) => {
@@ -49,18 +57,20 @@ export function IncomingGoodsPage() {
     }
   }
 
-  const handleProductChange = (id: string, field: string, value: string | number) => {
+  const handleProductChange = (id: string, field: keyof Omit<ProductRow, 'id'>, value: string | number) => {
     setProductRows(productRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setErrorMessage('') // Reset error message pada tiap submit
     const hasEmptyFields = productRows.some((row) => !row.name || row.quantity === 0)
     if (!formData.supplier || !formData.date || hasEmptyFields) {
+      setErrorMessage('Harap lengkapi semua data barang dan pastikan kuantitas lebih dari 0.')
       return
     }
     setSuccessMessage('Data barang masuk berhasil ditambahkan!')
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setFormData({ supplier: suppliers[0], date: new Date().toISOString().split('T')[0] })
       setProductRows([{ id: '1', name: '', quantity: 0 }])
       setSuccessMessage('')
@@ -149,6 +159,11 @@ export function IncomingGoodsPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-accent">Input Barang Baru</h2>
           <form onSubmit={handleSubmit} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-8 space-y-6">
+            {errorMessage && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-red-400 text-sm font-medium">
+                {errorMessage}
+              </div>
+            )}
             {successMessage && (
               <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4 text-emerald-300 text-sm font-medium">
                 {successMessage}

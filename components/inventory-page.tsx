@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Search } from 'lucide-react'
+import { getCategoryBadgeColor } from '@/lib/utils/colors'
 
 const inventoryData = [
   { sku: 'SKU-001', name: 'Industrial Motor 5HP', category: 'Machinery', stock: 145, unit: 'pieces', status: 'In Stock' },
@@ -21,59 +22,45 @@ const inventoryData = [
 export function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredData = useMemo(() => {
-    return inventoryData.filter(
-      (item) =>
-        item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [searchQuery])
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'Electronics':
-        return 'bg-blue-500/30 text-blue-300'
-      case 'Machinery':
-        return 'bg-purple-500/30 text-purple-300'
-      case 'FMCG':
-        return 'bg-green-500/30 text-green-300'
-      case 'Raw Materials':
-        return 'bg-orange-500/30 text-orange-300'
-      default:
-        return 'bg-gray-500/30 text-gray-300'
-    }
-  }
+  const filteredData = inventoryData.filter(
+    (item) =>
+      item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const getStockStatusColor = (status: string) => {
     return status === 'In Stock' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-red-500/30 text-red-300'
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Inventori Produk</h1>
-        <p className="text-muted-foreground">Pantau ketersediaan, status stok, dan detail kategori seluruh produk gudang dalam satu dasbor.</p>
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Inventori Produk</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Pantau ketersediaan, status stok, dan detail kategori seluruh produk gudang dalam satu dasbor.</p>
+        </div>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-        <div className="flex items-center gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3">
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+        <div className="flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
           <Search className="w-5 h-5 text-muted-foreground" />
           <input
             type="text"
             placeholder="Cari disini..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
+            className="flex-1 bg-transparent text-sm sm:text-base text-foreground placeholder-muted-foreground outline-none"
           />
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 overflow-x-auto">
-        <Table>
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+        <div className="overflow-x-auto">
+          <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow className="border-b border-border hover:bg-transparent">
               <TableHead className="text-accent font-semibold">SKU</TableHead>
@@ -91,7 +78,7 @@ export function InventoryPage() {
                   <TableCell className="font-mono text-sm text-primary font-semibold">{item.sku}</TableCell>
                   <TableCell className="text-foreground font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge className={`${getCategoryColor(item.category)} border-0 rounded-lg`}>
+                    <Badge className={`${getCategoryBadgeColor(item.category)} border-0 rounded-lg`}>
                       {item.category}
                     </Badge>
                   </TableCell>
@@ -113,6 +100,7 @@ export function InventoryPage() {
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       {/* Summary Stats */}
@@ -134,4 +122,3 @@ export function InventoryPage() {
   )
 }
 
-export { InventoryPage }
