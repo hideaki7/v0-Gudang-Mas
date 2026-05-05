@@ -34,25 +34,25 @@ const topReturnSuppliers = [
 
 export function ReportsPage() {
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Analisis & Laporan</h1>
-          <p className="text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Analisis & Laporan</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg">
+        <button className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl font-semibold transition-all duration-200 shadow-lg w-full sm:w-auto">
           <Download className="w-5 h-5" />
           Ekspor Laporan
         </button>
       </div>
 
       {/* Grid Grafik */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         {/* Grafik Performa Supplier */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <h2 className="text-lg font-bold text-foreground mb-2">Performa Supplier</h2>
-          <p className="text-sm text-muted-foreground mb-6">Perbandingan tingkat retur dan kualitas per supplier</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6 min-w-0 overflow-hidden">
+          <h2 className="text-base sm:text-lg font-bold text-foreground mb-2">Performa Supplier</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">Perbandingan tingkat retur dan kualitas per supplier</p>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={supplierPerformanceData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
@@ -68,9 +68,9 @@ export function ReportsPage() {
         </div>
 
         {/* Grafik Tren Retur Bulanan */}
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <h2 className="text-lg font-bold text-foreground mb-2">Tren Retur Bulanan</h2>
-          <p className="text-sm text-muted-foreground mb-6">Data pengembalian selama 6 bulan terakhir</p>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6 min-w-0 overflow-hidden">
+          <h2 className="text-base sm:text-lg font-bold text-foreground mb-2">Tren Retur Bulanan</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">Data pengembalian selama 6 bulan terakhir</p>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={monthlyReturnTrendData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
@@ -87,34 +87,34 @@ export function ReportsPage() {
       </div>
 
       {/* Kartu Ringkasan Statistik */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Total Retur (Bulan Ini)</p>
-          <h3 className="text-3xl font-bold text-orange-400">52</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">Total Retur (Bulan Ini)</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-orange-400">52</h3>
           <p className="text-xs text-orange-300 mt-2">+15% dari bulan lalu</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Tingkat Persetujuan</p>
-          <h3 className="text-3xl font-bold text-emerald-400">82.7%</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">Tingkat Persetujuan</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-emerald-400">82.7%</h3>
           <p className="text-xs text-emerald-300 mt-2">43 dari 52 retur disetujui</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Rata-rata Resolusi</p>
-          <h3 className="text-3xl font-bold text-blue-400">3.2 Hari</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">Rata-rata Resolusi</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-blue-400">3.2 Hari</h3>
           <p className="text-xs text-blue-300 mt-2">Waktu proses pengerjaan</p>
         </div>
-        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-          <p className="text-sm text-muted-foreground mb-2">Supplier Aktif</p>
-          <h3 className="text-3xl font-bold text-accent">5</h3>
+        <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">Supplier Aktif</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-accent">5</h3>
           <p className="text-xs text-accent mt-2">Supplier dengan retur bulan ini</p>
         </div>
       </div>
 
       {/* Tabel Supplier dengan Retur Terbanyak */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6">
-        <h2 className="text-lg font-bold text-foreground mb-6">Supplier dengan Retur Terbanyak</h2>
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
+        <h2 className="text-base sm:text-lg font-bold text-foreground mb-4 sm:mb-6">Supplier dengan Retur Terbanyak</h2>
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-[580px]">
             <TableHeader>
               <TableRow className="border-b border-border hover:bg-transparent">
                 <TableHead className="text-accent font-semibold">Supplier</TableHead>

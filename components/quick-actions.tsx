@@ -44,7 +44,7 @@ export function QuickActions({
       </Button>
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent side="right" className="w-80 bg-card backdrop-blur-xl border-l border-border p-0 flex flex-col">
+        <SheetContent side="right" className="w-[78vw] sm:w-80 max-w-[300px] sm:max-w-none bg-card/85 sm:bg-card backdrop-blur-2xl sm:backdrop-blur-xl border-l border-border/60 sm:border-border shadow-2xl p-0 flex flex-col">
           <div className="p-5 border-b border-border/50">
             <SheetTitle className="text-foreground text-lg text-left">Side Bar</SheetTitle>
             <SheetDescription className="text-xs text-muted-foreground leading-tight text-left">

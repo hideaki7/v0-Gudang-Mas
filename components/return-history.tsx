@@ -99,25 +99,25 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   }
 
   return (
-    <div className="p-8 space-y-8 w-full"> {/* Gunakan w-full untuk mengatasi ruang kosong */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 w-full">
       {/* Header Halaman */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Riwayat Retur</h1>
-          <p className="text-muted-foreground">Kelola pengajuan retur serta status persetujuannya secara transparan.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Riwayat Retur</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Kelola pengajuan retur serta status persetujuannya secara transparan.</p>
         </div>
 
         {/* Bagian Tombol Aksi */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button
             onClick={onAddReturn}
-            className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg"
+            className="bg-primary hover:bg-primary/80 text-white px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl flex items-center gap-2 transition-all duration-200 font-medium shadow-lg w-full sm:w-auto"
           >
             <Plus className="w-5 h-5" />
             Ajukan Retur Baru
           </button>
 
-          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border">
+          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border w-full sm:w-auto">
             <Download className="w-5 h-5" />
             Ekspor Laporan
           </button>
@@ -145,28 +145,28 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
       </div>
 
       {/* Filter Pencarian */}
-      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end">
+      <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-foreground mb-2">Cari Retur</label>
-            <div className="flex items-center gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3">
+            <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">Cari Retur</label>
+            <div className="flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
               <Search className="w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Cari disini..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-transparent text-foreground placeholder-muted-foreground outline-none"
+                className="flex-1 bg-transparent text-sm sm:text-base text-foreground placeholder-muted-foreground outline-none"
               />
             </div>
           </div>
 
-          <div className="w-full lg:w-64">
-            <label className="block text-sm font-medium text-foreground mb-2">Filter Status</label>
+          <div className="w-full sm:w-64">
+            <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">Filter Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground outline-none focus:border-accent transition-colors"
+              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-foreground outline-none focus:border-accent transition-colors"
             >
               <option value="Semua">Semua Status</option>
               <option value="Menunggu">Menunggu</option>
