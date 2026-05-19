@@ -51,24 +51,24 @@ export function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background w-full">
-      <Sidebar collapsible="offcanvas" className="!max-w-[260px] bg-card/85 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-2xl border-r m-3 transition-transform duration-300 ease-in-out">
-        <SidebarHeader className="border-b border-border p-6">
+      <Sidebar collapsible="offcanvas" className="!max-w-[260px] bg-card/85 backdrop-blur-2xl border border-border/60 rounded-r-2xl rounded-l-none shadow-2xl border-r ml-0 mb-3 mt-0 transition-transform duration-300 ease-in-out">
+        <SidebarHeader className="border-b border-border flex h-14 items-center px-5 shrink-0">
           <button
             onClick={() => handleNavChange('dashboard')}
             className="flex items-center gap-3 w-full hover:opacity-80 transition-opacity"
           >
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-              <Package2 className="w-7 h-7 text-white" />
+            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-lg shrink-0">
+              <Package2 className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col text-left">
-              <h1 className="font-bold text-lg text-foreground">GudangMas</h1>
-              <p className="text-xs text-muted-foreground">Warehouse Manager</p>
+              <span className="font-bold text-base text-foreground leading-tight">GudangMas</span>
+              <span className="text-[11px] text-muted-foreground leading-tight">Warehouse Manager</span>
             </div>
           </button>
         </SidebarHeader>
 
         <SidebarContent className="flex-1">
-          <SidebarMenu className="space-y-3 px-3">
+          <SidebarMenu className="space-y-2 px-3 pt-4">
             {navItems.map((item) => {
               const Icon = item.icon
               return (
@@ -111,12 +111,10 @@ export function Dashboard() {
       </Sidebar>
 
       <SidebarInset className="flex-1 flex flex-col bg-background min-w-0 overflow-hidden w-full">
-        <header className="sticky top-0 flex h-20 shrink-0 items-center justify-between px-4 md:px-8 z-40">
-          <div className="flex items-center gap-4">
+        <header className="sticky top-0 flex h-14 shrink-0 items-center justify-between px-4 md:px-6 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
+          <div className="flex items-center gap-3">
             <SidebarTrigger className="md:hidden" />
-            <h2 className="text-xl md:text-3xl font-bold text-foreground">
-              {getPageTitle()}
-            </h2>
+            <span className="text-sm font-medium text-muted-foreground">{getPageTitle()}</span>
           </div>
           <div className="flex items-center gap-2">
             <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />

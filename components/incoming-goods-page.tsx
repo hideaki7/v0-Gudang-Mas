@@ -103,7 +103,7 @@ export function IncomingGoodsPage() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="font-bold text-foreground text-sm">{shipment.id}</p>
+                      <p className="font-bold text-foreground text-sm font-mono">{shipment.id}</p>
                       <p className="text-muted-foreground text-xs">{shipment.supplier}</p>
                     </div>
                     <Badge

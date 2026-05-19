@@ -41,8 +41,15 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
       </div>
 
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
-        <div className="flex items-center gap-2 sm:gap-3 bg-secondary/50 border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
-          <Search className="w-5 h-5 text-muted-foreground" />
+        <div
+          className="group flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
+          style={{ boxShadow: 'none' }}
+          onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.12), 0 0 18px 2px rgba(255,255,255,0.08)')}
+          onMouseLeave={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+          onFocusCapture={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.18), 0 0 22px 4px rgba(255,255,255,0.12)')}
+          onBlurCapture={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+        >
+          <Search className="w-5 h-5 text-muted-foreground group-hover:text-white group-focus-within:text-white transition-colors duration-300" />
           <input
             type="text"
             placeholder="Cari disini..."
@@ -53,48 +60,49 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
         </div>
       </div>
 
+
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
         <div className="overflow-x-auto">
           <Table className="min-w-[640px]">
-          <TableHeader>
-            <TableRow className="border-b border-border hover:bg-transparent">
-              <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
-              <TableHead className="text-accent font-semibold">Contact Person</TableHead>
-              <TableHead className="text-accent font-semibold">Kategori</TableHead>
-              <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
-              <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
-              <TableHead className="text-accent font-semibold text-center">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredSuppliers.map((supplier) => (
-              <TableRow key={supplier.id} className="border-b border-border hover:bg-secondary/50">
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-foreground">{supplier.name}</span>
-                    <span className="text-xs text-muted-foreground">{supplier.id}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="text-foreground">{supplier.contact}</TableCell>
-                <TableCell>
-                  <Badge className={`${getCategoryBadgeColor(supplier.category)} border-0 rounded-lg`}>
-                    {supplier.category}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-center font-semibold text-foreground">{supplier.shipments}</TableCell>
-                <TableCell className="text-center font-semibold">
-                  <span className={supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}>{supplier.returnRate}%</span>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-center gap-3">
-                    <button onClick={() => alert('Fitur edit supplier belum tersedia')} className="p-2 hover:bg-secondary rounded-lg transition-colors"><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
-                    <button onClick={() => alert('Fitur hapus supplier belum tersedia')} className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"><Trash2 className="w-4 h-4 text-muted-foreground" /></button>
-                  </div>
-                </TableCell>
+            <TableHeader>
+              <TableRow className="border-b border-border hover:bg-transparent">
+                <TableHead className="text-accent font-semibold">Nama Supplier</TableHead>
+                <TableHead className="text-accent font-semibold">Contact Person</TableHead>
+                <TableHead className="text-accent font-semibold">Kategori</TableHead>
+                <TableHead className="text-accent font-semibold text-center">Total Pengiriman</TableHead>
+                <TableHead className="text-accent font-semibold text-center">% Retur</TableHead>
+                <TableHead className="text-accent font-semibold text-center">Aksi</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredSuppliers.map((supplier) => (
+                <TableRow key={supplier.id} className="border-b border-border hover:bg-secondary/50">
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-foreground">{supplier.name}</span>
+                      <span className="text-xs text-muted-foreground">{supplier.id}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-foreground">{supplier.contact}</TableCell>
+                  <TableCell>
+                    <Badge className={`${getCategoryBadgeColor(supplier.category)} border-0 rounded-lg`}>
+                      {supplier.category}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center font-semibold text-foreground">{supplier.shipments}</TableCell>
+                  <TableCell className="text-center font-semibold">
+                    <span className={supplier.returnRate > 3.5 ? 'text-destructive' : 'text-accent'}>{supplier.returnRate}%</span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-3">
+                      <button onClick={() => alert('Fitur edit supplier belum tersedia')} className="p-2 hover:bg-secondary rounded-lg transition-colors"><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
+                      <button onClick={() => alert('Fitur hapus supplier belum tersedia')} className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"><Trash2 className="w-4 h-4 text-muted-foreground" /></button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
