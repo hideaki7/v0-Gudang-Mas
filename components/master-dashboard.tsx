@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, ArrowUp, ArrowDown } from 'lucide-react'
+import { TrendingUp, ArrowUp, ArrowDown, Package, PackageCheck, RotateCcw, Star } from 'lucide-react'
 
 const DashboardCharts = dynamic(() => import('./dashboard-charts'), {
   ssr: false,
@@ -33,7 +33,8 @@ const metricsData = [
     subtitle: 'Item di gudang',
     change: '+5.2%',
     positive: true,
-    icon: '📦',
+    Icon: Package,
+    color: '#38bdf8',
   },
   {
     label: 'Barang Masuk',
@@ -41,7 +42,8 @@ const metricsData = [
     subtitle: 'Bulan ini',
     change: '+12.5%',
     positive: true,
-    icon: '📥',
+    Icon: PackageCheck,
+    color: '#34d399',
   },
   {
     label: 'Total Retur',
@@ -49,7 +51,8 @@ const metricsData = [
     subtitle: 'Tahun ini',
     change: '-3.2%',
     positive: true,
-    icon: '↩️',
+    Icon: RotateCcw,
+    color: '#f97316',
   },
   {
     label: 'Skor Kualitas',
@@ -57,7 +60,8 @@ const metricsData = [
     subtitle: 'Minggu ini',
     change: '+2.1%',
     positive: true,
-    icon: '✨',
+    Icon: Star,
+    color: '#a78bfa',
   },
 ]
 
@@ -73,34 +77,43 @@ export function MasterDashboard() {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {metricsData.map((metric, index) => (
-          <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 group hover:backdrop-blur-2xl transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
-                <h3 className="text-3xl font-bold text-foreground">{metric.value}</h3>
+        {metricsData.map((metric, index) => {
+          const Icon = metric.Icon
+          return (
+            <div key={index} className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 group hover:border-white/10 transition-all duration-300">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
+                  <h3 className="text-3xl font-bold text-foreground">{metric.value}</h3>
+                </div>
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${metric.color}20` }}
+                >
+                  <Icon className="w-5 h-5" style={{ color: metric.color }} />
+                </div>
               </div>
-              <span className="text-4xl opacity-60 group-hover:opacity-100 transition-opacity">{metric.icon}</span>
-            </div>
-            <div className="flex items-center justify-between pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
-              <div className="flex items-center gap-1">
-                {metric.positive ? (
-                  <ArrowUp className="w-3 h-3 text-accent" />
-                ) : (
-                  <ArrowDown className="w-3 h-3 text-destructive" />
-                )}
-                <span className={`text-xs font-semibold ${metric.positive ? 'text-accent' : 'text-destructive'}`}>
-                  {metric.change}
-                </span>
+              <div className="flex items-center justify-between pt-2 border-t border-border">
+                <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
+                <div className="flex items-center gap-1">
+                  {metric.positive ? (
+                    <ArrowUp className="w-3 h-3 text-emerald-400" />
+                  ) : (
+                    <ArrowDown className="w-3 h-3 text-destructive" />
+                  )}
+                  <span className={`text-xs font-semibold ${metric.positive ? 'text-emerald-400' : 'text-destructive'}`}>
+                    {metric.change}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Charts Section (Lazy Loaded) */}
       <DashboardCharts />
+
 
       {/* Tables Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

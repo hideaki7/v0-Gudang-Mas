@@ -149,8 +149,15 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1">
             <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">Cari Retur</label>
-            <div className="flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
-              <Search className="w-5 h-5 text-muted-foreground" />
+            <div
+              className="group flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
+              style={{ boxShadow: 'none' }}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.12), 0 0 18px 2px rgba(255,255,255,0.08)')}
+              onMouseLeave={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+              onFocusCapture={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.18), 0 0 22px 4px rgba(255,255,255,0.12)')}
+              onBlurCapture={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+            >
+              <Search className="w-5 h-5 text-muted-foreground group-hover:text-white group-focus-within:text-white transition-colors duration-300" />
               <input
                 type="text"
                 placeholder="Cari disini..."
@@ -159,6 +166,7 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
                 className="flex-1 bg-transparent text-sm sm:text-base text-foreground placeholder-muted-foreground outline-none"
               />
             </div>
+
           </div>
 
           <div className="w-full sm:w-64">

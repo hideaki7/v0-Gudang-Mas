@@ -45,8 +45,15 @@ export function InventoryPage() {
 
       {/* Search Bar */}
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
-        <div className="flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
-          <Search className="w-5 h-5 text-muted-foreground" />
+        <div
+          className="group flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
+          style={{ boxShadow: 'none' }}
+          onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.12), 0 0 18px 2px rgba(255,255,255,0.08)')}
+          onMouseLeave={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+          onFocusCapture={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.18), 0 0 22px 4px rgba(255,255,255,0.12)')}
+          onBlurCapture={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
+        >
+          <Search className="w-5 h-5 text-muted-foreground group-hover:text-white group-focus-within:text-white transition-colors duration-300" />
           <input
             type="text"
             placeholder="Cari disini..."
@@ -61,45 +68,45 @@ export function InventoryPage() {
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6">
         <div className="overflow-x-auto">
           <Table className="min-w-[640px]">
-          <TableHeader>
-            <TableRow className="border-b border-border hover:bg-transparent">
-              <TableHead className="text-accent font-semibold">SKU</TableHead>
-              <TableHead className="text-accent font-semibold">Nama Produk</TableHead>
-              <TableHead className="text-accent font-semibold">Kategori</TableHead>
-              <TableHead className="text-accent font-semibold">Jumlah Stok</TableHead>
-              <TableHead className="text-accent font-semibold">Unit</TableHead>
-              <TableHead className="text-accent font-semibold">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredData.length > 0 ? (
-              filteredData.map((item) => (
-                <TableRow key={item.sku} className="border-b border-border hover:bg-secondary/50 transition-all duration-200">
-                  <TableCell className="font-mono text-sm text-primary font-semibold">{item.sku}</TableCell>
-                  <TableCell className="text-foreground font-medium">{item.name}</TableCell>
-                  <TableCell>
-                    <Badge className={`${getCategoryBadgeColor(item.category)} border-0 rounded-lg`}>
-                      {item.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-foreground font-bold text-lg">{item.stock}</TableCell>
-                  <TableCell className="text-muted-foreground">{item.unit}</TableCell>
-                  <TableCell>
-                    <Badge className={`${getStockStatusColor(item.status)} border-0 rounded-lg`}>
-                      {item.status === 'In Stock' ? '✓' : '!'} {item.status}
-                    </Badge>
+            <TableHeader>
+              <TableRow className="border-b border-border hover:bg-transparent">
+                <TableHead className="text-accent font-semibold">SKU</TableHead>
+                <TableHead className="text-accent font-semibold">Nama Produk</TableHead>
+                <TableHead className="text-accent font-semibold">Kategori</TableHead>
+                <TableHead className="text-accent font-semibold">Jumlah Stok</TableHead>
+                <TableHead className="text-accent font-semibold">Unit</TableHead>
+                <TableHead className="text-accent font-semibold">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.length > 0 ? (
+                filteredData.map((item) => (
+                  <TableRow key={item.sku} className="border-b border-border hover:bg-secondary/50 transition-all duration-200">
+                    <TableCell className="font-mono text-sm text-primary font-semibold">{item.sku}</TableCell>
+                    <TableCell className="text-foreground font-medium">{item.name}</TableCell>
+                    <TableCell>
+                      <Badge className={`${getCategoryBadgeColor(item.category)} border-0 rounded-lg`}>
+                        {item.category}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-foreground font-bold text-lg">{item.stock}</TableCell>
+                    <TableCell className="text-muted-foreground">{item.unit}</TableCell>
+                    <TableCell>
+                      <Badge className={`${getStockStatusColor(item.status)} border-0 rounded-lg`}>
+                        {item.status === 'In Stock' ? '✓' : '!'} {item.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Tidak ada produk yang cocok.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  Tidak ada produk yang cocok.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
 
