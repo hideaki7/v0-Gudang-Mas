@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import {
   Sidebar,
   SidebarContent,
@@ -19,12 +21,12 @@ import { ReportsPage } from '@/components/reports-page'
 import { MasterDashboard } from '@/components/master-dashboard'
 import { UserNav } from '@/components/user-nav'
 import { QuickActions } from '@/components/quick-actions'
-import { Package2, Users, Truck, RotateCcw, BarChart3, Menu, Settings, LogOut } from 'lucide-react'
+import { Warehouse, Package, Users, Truck, RotateCcw, BarChart3, Settings, LogOut } from 'lucide-react'
 import { SupplierForm } from './supplier-form'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 const navItems = [
-  { icon: Package2, label: 'Stok Barang', value: 'inventory' },
+  { icon: Package, label: 'Stok Barang', value: 'inventory' },
   { icon: Users, label: 'Supplier', value: 'suppliers' },
   { icon: Truck, label: 'Barang Masuk', value: 'incoming' },
   { icon: RotateCcw, label: 'Retur', value: 'returns' },
@@ -32,6 +34,7 @@ const navItems = [
 ]
 
 export function Dashboard() {
+  const router = useRouter()
   const [activeNav, setActiveNav] = useState('dashboard')
   const [isCreatingSupplier, setIsCreatingSupplier] = useState(false)
   const [isCreatingReturn, setIsCreatingReturn] = useState(false)
@@ -40,6 +43,12 @@ export function Dashboard() {
     setActiveNav(value)
     setIsCreatingReturn(false)
     setIsCreatingSupplier(false)
+  }
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
   }
 
   const getPageTitle = () => {
@@ -58,7 +67,7 @@ export function Dashboard() {
             className="flex items-center gap-3 w-full hover:opacity-80 transition-opacity"
           >
             <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-lg shrink-0">
-              <Package2 className="w-5 h-5 text-white" />
+              <img src="/GudangMas Icon.png" alt="Gudang Mas Logo" className="w-5 h-5 object-contain" />
             </div>
             <div className="flex flex-col text-left">
               <span className="font-bold text-base text-foreground leading-tight">GudangMas</span>
@@ -101,7 +110,10 @@ export function Dashboard() {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-200">
+              <SidebarMenuButton
+                onClick={handleLogout}
+                className="w-full justify-start px-4 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-200"
+              >
                 <LogOut className="w-5 h-5 mr-3" />
                 <span>Logout</span>
               </SidebarMenuButton>
