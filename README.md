@@ -1,35 +1,27 @@
-# v0-Gudang-Mas
+# GudangMas - Inventory Management System
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+GudangMas adalah sistem manajemen inventaris terpadu yang dirancang khusus untuk perusahaan distribusi barang. Sistem ini tidak hanya melacak stok gudang secara *real-time*, tetapi juga dilengkapi dengan modul andalan untuk mengelola hubungan dengan pemasok (*suppliers*) dan memproses retur barang (*returns*) secara terstruktur.
 
-## Built with v0
+## Fitur Utama
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+- **Manajemen Pemasok (Suppliers)**  
+  Mendata dan mengelola informasi pemasok secara lengkap, termasuk detail kontak, kategori barang yang disuplai, hingga riwayat pengiriman barang.
+  
+- **Penerimaan Barang (Incoming Goods)**  
+  Mencatat barang yang tiba di gudang secara akurat beserta detail spesifik per produk.
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_nJ5AvzAei0Xk2eUCRp9vyZqAP6zQ)
+- **Manajemen Retur (Returns)**  
+  Memproses pengajuan retur secara terstruktur apabila ditemukan barang cacat, kekurangan jumlah, atau tidak sesuai pesanan. Sistem akan mencatat alasan retur, jumlah barang, dan status persetujuan dari *supplier*.
 
-## Getting Started
+- **Analisis & Evaluasi (Analytics)**  
+  Data retur yang terstruktur memungkinkan identifikasi *supplier* dengan tingkat retur tertinggi, jenis produk yang paling sering bermasalah, dan tren kualitas barang dari waktu ke waktu. Insight ini berguna sebagai dasar keputusan negosiasi kontrak dengan pemasok.
 
-First, run the development server:
+- **Dashboard Interaktif**  
+  Menyajikan visualisasi data yang komprehensif terkait stok gudang, aktivitas barang masuk, dan rasio retur dalam satu tampilan pusat.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Tools yang Digunakan
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
-
-<a href="https://v0.app/chat/api/kiro/clone/hideaki7/v0-Gudang-Mas" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS
+- **Komponen UI:** Shadcn UI / Radix UI, Lucide Icons, Recharts
+- **Database & Backend:** Supabase (PostgreSQL)
