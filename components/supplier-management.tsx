@@ -5,7 +5,10 @@ import { Search, Plus, Edit2, Trash2 } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { getCategoryBadgeColor } from '@/lib/utils/colors'
-import { getSuppliers } from '@/lib/services/suppliers'
+import {
+  getSuppliers,
+  deleteSupplier,updateSupplier
+} from '@/lib/services/suppliers'
 
 export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,6 +26,50 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
       console.error(error)
     }
   }
+
+  async function handleDeleteSupplier(id: number) {
+  const confirmDelete = confirm(
+    'Yakin ingin menghapus supplier ini?'
+  )
+
+  if (!confirmDelete) return
+
+  try {
+    await deleteSupplier(id)
+
+    await loadSuppliers()
+
+    alert('Supplier berhasil dihapus')
+  } catch (error) {
+    console.error(error)
+    alert('Gagal menghapus supplier')
+  }
+}
+
+  async function handleEditSupplier(supplier: any) {
+  const newName = prompt(
+    'Nama supplier:',
+    supplier.supplier_name
+  )
+
+  if (!newName) return
+
+  try {
+    await updateSupplier(
+      supplier.supplier_id,
+      {
+        supplier_name: newName
+      }
+    )
+
+    await loadSuppliers()
+
+    alert('Supplier berhasil diupdate')
+  } catch (error) {
+    console.error(error)
+    alert('Gagal update supplier')
+  }
+}
 
   const filteredSuppliers = suppliersData.filter(
     (supplier) =>
@@ -159,20 +206,18 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
                   <TableCell>
                     <div className="flex items-center justify-center gap-3">
                       <button
-                        onClick={() =>
-                          alert('Fitur edit supplier belum tersedia')
-                        }
-                        className="p-2 hover:bg-secondary rounded-lg transition-colors"
-                      >
+                          onClick={() => handleEditSupplier(supplier)}
+                          className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                        >
                         <Edit2 className="w-4 h-4 text-muted-foreground" />
                       </button>
 
                       <button
-                        onClick={() =>
-                          alert('Fitur hapus supplier belum tersedia')
-                        }
-                        className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
-                      >
+                          onClick={() =>
+                            handleDeleteSupplier(supplier.supplier_id)
+                          }
+                          className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
+                        >
                         <Trash2 className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </div>

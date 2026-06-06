@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createSupplier } from '@/lib/services/suppliers'
 import { Users, Mail, Phone, MapPin, Globe, Save, ArrowLeft } from 'lucide-react'
 
 interface SupplierFormData {
@@ -36,19 +37,32 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  e.preventDefault()
+  setIsSubmitting(true)
 
-    // Simulasi pengiriman data ke server
+  try {
+    await createSupplier({
+      supplier_name: formData.name,
+      contact_name: formData.contactPerson,
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+    })
+
+    setSubmitSuccess(true)
+
     setTimeout(() => {
-      setIsSubmitting(false)
-      setSubmitSuccess(true)
-      setTimeout(() => {
-        setSubmitSuccess(false)
-        onCancel() // Kembali ke daftar supplier setelah sukses
-      }, 2000)
-    }, 1000)
+      setSubmitSuccess(false)
+      onCancel()
+    }, 2000)
+
+  } catch (error) {
+    console.error(error)
+    alert('Gagal menyimpan supplier')
   }
+
+  setIsSubmitting(false)
+}
 
   const isFormValid = formData.name && formData.contactPerson && formData.category
 

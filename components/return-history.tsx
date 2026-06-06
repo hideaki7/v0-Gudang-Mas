@@ -3,9 +3,13 @@
 import { useState, useEffect } from 'react'
 import { Search, Download, Plus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { getReturns } from '@/lib/services/returns'
+import {
+  getReturns,
+  updateReturnStatus
+} from '@/lib/services/returns'
 
 interface ReturnItem {
+  returnId: number
   id: string
   timestamp: string
   supplier: string
@@ -14,8 +18,6 @@ interface ReturnItem {
   quantity: number
   status: 'Menunggu' | 'Disetujui' | 'Ditolak'
 }
-
-
 
 // Tambahkan onAddReturn ke dalam props agar bisa dipicu dari dashboard.tsx
 export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
@@ -33,6 +35,7 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
         console.log("RETURNS:", data)
 
         const formatted = data.map((ret: any) => ({
+          returnId: ret.return_id,
           id: `RET${String(ret.return_id).padStart(3, '0')}`,
           timestamp: ret.return_date,
           supplier: ret.suppliers?.supplier_name ?? '-',
@@ -57,6 +60,24 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
         console.error(error)
       }
     }
+
+    async function handleApprove(id: number) {
+  try {
+    await updateReturnStatus(id, 'approved')
+    await loadReturns()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function handleReject(id: number) {
+  try {
+    await updateReturnStatus(id, 'rejected')
+    await loadReturns()
+  } catch (error) {
+    console.error(error)
+  }
+}
 
   const filteredData = returnHistoryData.filter((item) => {
     const matchesSearch =
@@ -225,15 +246,35 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end lg:justify-start">
-                  <Badge className={`${getStatusStyles(item.status)} rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 min-w-fit`}>
-                    <span>{getStatusIcon(item.status)}</span>
-                    <span>{item.status}</span>
-                  </Badge>
+                <div className="flex items-center gap-2 justify-end lg:justify-start">
+            <Badge
+              className={`${getStatusStyles(item.status)} rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 min-w-fit`}
+            >
+              <span>{getStatusIcon(item.status)}</span>
+              <span>{item.status}</span>
+            </Badge>
+
+            {item.status === 'Menunggu' && (
+              <>
+                <button
+                  onClick={() => handleApprove(item.returnId)}
+                  className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm"
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() => handleReject(item.returnId)}
+                  className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
+                >
+                  Reject
+                </button>
+              </>
+            )}
+          </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-12 text-center">
             <p className="text-muted-foreground mb-2">Tidak ada data retur</p>
