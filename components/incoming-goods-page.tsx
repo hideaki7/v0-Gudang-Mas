@@ -4,6 +4,9 @@ import { useState, useRef, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2 } from 'lucide-react'
+import { getIncomingGoods, createIncomingGoods } from '@/lib/services/incoming'
+import { getSuppliers } from '@/lib/services/suppliers'
+import { getProducts } from '@/lib/services/products'
 
 const recentShipments = [
   { id: 'SHP-001', supplier: 'PT Maju Jaya', items: 5, date: '2024-04-05', status: 'Diterima', totalQty: 250 },
@@ -13,13 +16,7 @@ const recentShipments = [
   { id: 'SHP-005', supplier: 'Tech Components Asia', items: 6, date: '2024-04-01', status: 'Dalam Perjalanan', totalQty: 510 },
 ]
 
-const suppliers = [
-  'PT Maju Jaya',
-  'CV Industri Indonesia',
-  'Bersama Utama',
-  'Global Supplies Ltd',
-  'Tech Components Asia',
-]
+
 
 interface ProductRow {
   id: string
@@ -31,21 +28,41 @@ interface ProductRow {
 export function IncomingGoodsPage() {
   const [selectedShipment, setSelectedShipment] = useState<string | null>('SHP-001')
   const [formData, setFormData] = useState({
-    supplier: suppliers[0],
-    date: new Date().toISOString().split('T')[0],
-  })
+  supplier: '',
+  date: new Date().toISOString().split('T')[0],
+})
   const [productRows, setProductRows] = useState<ProductRow[]>([
     { id: '1', name: '', quantity: 0 },
   ])
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [suppliers, setSuppliers] = useState<any[]>([])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
+    useEffect(() => {
+    loadSuppliers()
+
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [])
+
+    async function loadSuppliers() {
+    try {
+      const data = await getSuppliers()
+
+      setSuppliers(data || [])
+
+      if (data?.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          supplier: data[0].supplier_id.toString(),
+        }))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const handleAddProductRow = () => {
     setProductRows([...productRows, { id: crypto.randomUUID(), name: '', quantity: 0 }])
@@ -61,20 +78,70 @@ export function IncomingGoodsPage() {
     setProductRows(productRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setErrorMessage('') // Reset error message pada tiap submit
-    const hasEmptyFields = productRows.some((row) => !row.name || row.quantity === 0)
+    setErrorMessage('')
+
+    const hasEmptyFields = productRows.some(
+      (row) => !row.name || row.quantity <= 0
+    )
+
     if (!formData.supplier || !formData.date || hasEmptyFields) {
-      setErrorMessage('Harap lengkapi semua data barang dan pastikan kuantitas lebih dari 0.')
+      setErrorMessage(
+        'Harap lengkapi semua data barang dan pastikan kuantitas lebih dari 0.'
+      )
       return
     }
-    setSuccessMessage('Data barang masuk berhasil ditambahkan!')
-    timeoutRef.current = setTimeout(() => {
-      setFormData({ supplier: suppliers[0], date: new Date().toISOString().split('T')[0] })
-      setProductRows([{ id: '1', name: '', quantity: 0 }])
-      setSuccessMessage('')
-    }, 2000)
+
+    try {
+      const products = await getProducts()
+
+      const details = productRows
+        .map((row) => {
+          const product = products.find(
+            (p: any) =>
+              p.product_name.toLowerCase() === row.name.toLowerCase()
+          )
+
+          if (!product) return null
+
+          return {
+            product_id: product.product_id,
+            quantity: row.quantity,
+            unit_price: product.unit_price ?? 0,
+          }
+        })
+        .filter(Boolean) as any[]
+
+      if (details.length === 0) {
+        setErrorMessage('Produk tidak ditemukan di database.')
+        return
+      }
+
+      await createIncomingGoods(
+        {
+          supplier_id: Number(formData.supplier),
+          received_date: formData.date,
+          received_by: 'Admin Gudang',
+        },
+        details
+      )
+
+      setSuccessMessage('Data barang masuk berhasil ditambahkan!')
+
+      loadSuppliers()
+
+      setProductRows([
+        {
+          id: crypto.randomUUID(),
+          name: '',
+          quantity: 0,
+        },
+      ])
+    } catch (error) {
+      console.error(error)
+      setErrorMessage('Gagal menyimpan data ke database.')
+    }
   }
 
   const selectedShipmentData = recentShipments.find((s) => s.id === selectedShipment)
@@ -179,8 +246,12 @@ export function IncomingGoodsPage() {
                   className="w-full bg-secondary/50 border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
                 >
                   {suppliers.map((supplier) => (
-                    <option key={supplier} value={supplier} className="bg-card text-foreground">
-                      {supplier}
+                    <option
+                      key={supplier.supplier_id}
+                      value={supplier.supplier_id}
+                      className="bg-card text-foreground"
+                    >
+                      {supplier.supplier_name}
                     </option>
                   ))}
                 </select>
