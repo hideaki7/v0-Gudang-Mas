@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, Download, Plus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { getReturns } from '@/lib/services/returns'
 
 interface ReturnItem {
   id: string
@@ -14,49 +15,47 @@ interface ReturnItem {
   status: 'Menunggu' | 'Disetujui' | 'Ditolak'
 }
 
-const returnHistoryData: ReturnItem[] = [
-  {
-    id: 'RET001',
-    timestamp: '2024-04-05 14:30',
-    supplier: 'PT Maju Jaya',
-    productName: 'LCD Display 24"',
-    reason: 'Barang Rusak',
-    quantity: 3,
-    status: 'Disetujui',
-  },
-  {
-    id: 'RET002',
-    timestamp: '2024-04-04 10:15',
-    supplier: 'CV Industri Indonesia',
-    productName: 'Tepung Terigu 25kg',
-    reason: 'Salah Spesifikasi',
-    quantity: 5,
-    status: 'Menunggu',
-  },
-  {
-    id: 'RET003',
-    timestamp: '2024-04-03 16:45',
-    supplier: 'PT Karya Mitra',
-    productName: 'Batang Besi 10mm',
-    reason: 'Kekurangan Jumlah',
-    quantity: 20,
-    status: 'Disetujui',
-  },
-  {
-    id: 'RET004',
-    timestamp: '2024-04-02 09:20',
-    supplier: 'Supplier Berkah',
-    productName: 'Minyak Goreng 5L',
-    reason: 'Cacat Produksi',
-    quantity: 10,
-    status: 'Ditolak',
-  },
-]
+
 
 // Tambahkan onAddReturn ke dalam props agar bisa dipicu dari dashboard.tsx
 export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu' | 'Disetujui' | 'Ditolak'>('Semua')
+  const [returnHistoryData, setReturnHistoryData] = useState<any[]>([])
+
+      useEffect(() => {
+      loadReturns()
+    }, [])
+
+    async function loadReturns() {
+      try {
+        const data = await getReturns()
+
+        const formatted = data.map((ret: any) => ({
+          id: `RET${String(ret.return_id).padStart(3, '0')}`,
+          timestamp: ret.return_date,
+          supplier: ret.suppliers?.supplier_name ?? '-',
+          productName:
+            ret.return_details?.[0]?.products?.product_name ?? '-',
+          reason: ret.reason,
+          quantity:
+            ret.return_details?.reduce(
+              (sum: number, d: any) => sum + d.quantity_returned,
+              0
+            ) ?? 0,
+          status:
+            ret.status === 'approved'
+              ? 'Disetujui'
+              : ret.status === 'rejected'
+              ? 'Ditolak'
+              : 'Menunggu',
+        }))
+
+        setReturnHistoryData(formatted)
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
   const filteredData = returnHistoryData.filter((item) => {
     const matchesSearch =
