@@ -8,16 +8,6 @@ import { getIncomingGoods, createIncomingGoods } from '@/lib/services/incoming'
 import { getSuppliers } from '@/lib/services/suppliers'
 import { getProducts } from '@/lib/services/products'
 
-const recentShipments = [
-  { id: 'SHP-001', supplier: 'PT Maju Jaya', items: 5, date: '2024-04-05', status: 'Diterima', totalQty: 250 },
-  { id: 'SHP-002', supplier: 'CV Industri Indonesia', items: 3, date: '2024-04-04', status: 'Dalam Perjalanan', totalQty: 180 },
-  { id: 'SHP-003', supplier: 'Bersama Utama', items: 7, date: '2024-04-03', status: 'Diproses', totalQty: 420 },
-  { id: 'SHP-004', supplier: 'Global Supplies Ltd', items: 4, date: '2024-04-02', status: 'Diterima', totalQty: 340 },
-  { id: 'SHP-005', supplier: 'Tech Components Asia', items: 6, date: '2024-04-01', status: 'Dalam Perjalanan', totalQty: 510 },
-]
-
-
-
 interface ProductRow {
   id: string
   name: string
@@ -37,12 +27,14 @@ export function IncomingGoodsPage() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [suppliers, setSuppliers] = useState<any[]>([])
+  const [incomingGoods, setIncomingGoods] = useState<any[]>([])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
-    loadSuppliers()
+      loadSuppliers()
+      loadIncomingGoods()
 
-    return () => {
+      return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [])
@@ -58,6 +50,22 @@ export function IncomingGoodsPage() {
           ...prev,
           supplier: data[0].supplier_id.toString(),
         }))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+    async function loadIncomingGoods() {
+    try {
+      const data = await getIncomingGoods()
+
+      setIncomingGoods(data || [])
+
+      if (data?.length > 0) {
+        setSelectedShipment(
+          `SHP-${String(data[0].incoming_id).padStart(3, '0')}`
+        )
       }
     } catch (error) {
       console.error(error)
@@ -127,6 +135,8 @@ export function IncomingGoodsPage() {
         details
       )
 
+      await loadIncomingGoods()
+
       setSuccessMessage('Data barang masuk berhasil ditambahkan!')
 
       loadSuppliers()
@@ -144,7 +154,13 @@ export function IncomingGoodsPage() {
     }
   }
 
-  const selectedShipmentData = recentShipments.find((s) => s.id === selectedShipment)
+  const selectedShipmentData = incomingGoods.find(
+    (s) =>
+      `SHP-${String(s.incoming_id).padStart(3, '0')}` ===
+      selectedShipment
+  )
+
+  console.log("SELECTED", selectedShipmentData)
 
   return (
     <div className="p-8 space-y-8 w-full">
@@ -161,17 +177,22 @@ export function IncomingGoodsPage() {
           <h2 className="text-xl font-bold text-foreground">Riwayat Pengiriman</h2>
           <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg overflow-hidden">
             <div className="overflow-y-auto max-h-[500px]">
-              {recentShipments.map((shipment) => (
+              {incomingGoods.map((shipment) => (
                 <div
-                  key={shipment.id}
-                  onClick={() => setSelectedShipment(shipment.id)}
-                  className={`p-5 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment === shipment.id ? 'bg-secondary border-l-4 border-l-primary' : ''
+                  key={`shipment-${shipment.incoming_id}`}
+                  onClick={() =>
+                    setSelectedShipment(
+                      `SHP-${String(shipment.incoming_id).padStart(3, '0')}`
+                    )
+                  }
+                  className={`p-5 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment ===
+`SHP-${String(shipment.incoming_id).padStart(3, '0')}` ? 'bg-secondary border-l-4 border-l-primary' : ''
                     }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="font-bold text-foreground text-sm font-mono">{shipment.id}</p>
-                      <p className="text-muted-foreground text-xs">{shipment.supplier}</p>
+                      <p className="font-bold text-foreground text-sm font-mono">SHP-{String(shipment.incoming_id).padStart(3, '0')}</p>
+                      <p className="text-muted-foreground text-xs">{shipment.suppliers?.supplier_name}</p>
                     </div>
                     <Badge
                       className={`border-0 rounded-lg text-[10px] px-2 py-0.5 ${shipment.status === 'Diterima'
@@ -185,8 +206,13 @@ export function IncomingGoodsPage() {
                     </Badge>
                   </div>
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{shipment.items} item • {shipment.totalQty} total unit</span>
-                    <span>{shipment.date}</span>
+                    <span>{shipment.incoming_good_details?.length ?? 0} item • {
+                          shipment.incoming_good_details?.reduce(
+                            (sum:number,d:any)=>sum+d.quantity,
+                            0
+                          ) ?? 0
+                        } total unit</span>
+                    <span>{shipment.received_date}</span>
                   </div>
                 </div>
               ))}
@@ -198,24 +224,29 @@ export function IncomingGoodsPage() {
             <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-6 space-y-4">
               <h3 className="font-bold text-foreground border-b border-border pb-2 flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-primary rounded-full"></div>
-                Detail Pengiriman: {selectedShipmentData.id}
+                Detail Pengiriman:SHP-{String(selectedShipmentData.incoming_id).padStart(3, '0')}
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Supplier</span>
-                  <span className="text-foreground font-medium">{selectedShipmentData.supplier}</span>
+                  <span className="text-foreground font-medium">{selectedShipmentData.suppliers?.supplier_name}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Tanggal Masuk</span>
-                  <span className="text-foreground font-medium">{selectedShipmentData.date}</span>
+                  <span className="text-foreground font-medium">{selectedShipmentData.received_date}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Jumlah Item</span>
-                  <span className="text-foreground font-bold">{selectedShipmentData.items} Produk</span>
+                  <span className="text-foreground font-bold">{selectedShipmentData.incoming_good_details?.length ?? 0} Produk</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Total Kuantitas</span>
-                  <span className="text-foreground font-bold">{selectedShipmentData.totalQty} Unit</span>
+                  <span className="text-foreground font-bold">{
+                      selectedShipmentData.incoming_good_details?.reduce(
+                        (sum:number,d:any)=>sum+d.quantity,
+                        0
+                      ) ?? 0
+                    } Unit</span>
                 </div>
               </div>
             </div>
