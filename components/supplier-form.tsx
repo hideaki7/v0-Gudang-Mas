@@ -23,6 +23,15 @@ const categories = [
   'Lainnya',
 ]
 
+const categoryMap: Record<string, number> = {
+  'Elektronik': 1,
+  'FMCG': 2,
+  'Mesin & Perangkat Keras': 3,
+  'Bahan Baku': 4,
+  'Logistik': 5,
+  'Lainnya': 6,
+}
+
 export function SupplierForm({ onCancel }: { onCancel: () => void }) {
   const [formData, setFormData] = useState<SupplierFormData>({
     name: '',
@@ -42,12 +51,13 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
 
   try {
     await createSupplier({
-      supplier_name: formData.name,
-      contact_name: formData.contactPerson,
-      phone: formData.phone,
-      email: formData.email,
-      address: formData.address,
-    })
+    supplier_name: formData.name,
+    contact_name: formData.contactPerson,
+    phone: formData.phone,
+    email: formData.email,
+    address: formData.address,
+    category_id: categoryMap[formData.category],
+  })
 
     setSubmitSuccess(true)
 
