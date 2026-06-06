@@ -30,6 +30,7 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
     async function loadReturns() {
       try {
         const data = await getReturns()
+        console.log("RETURNS:", data)
 
         const formatted = data.map((ret: any) => ({
           id: `RET${String(ret.return_id).padStart(3, '0')}`,

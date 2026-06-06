@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Upload, X } from 'lucide-react'
+import { getIncomingGoods } from '@/lib/services/incoming'
+import { createReturn } from '@/lib/services/returns'
 
 interface FormData {
   shipmentId: string
@@ -22,13 +24,7 @@ const returnReasons = [
   'Barang Salah',
 ]
 
-const shipmentIds = [
-  { id: 'SHP001', supplier: 'PT Maju Jaya' },
-  { id: 'SHP002', supplier: 'CV Industri Indonesia' },
-  { id: 'SHP003', supplier: 'PT Karya Mitra' },
-  { id: 'SHP004', supplier: 'Supplier Berkah' },
-  { id: 'SHP005', supplier: 'PT Global Trade' },
-]
+
 
 // Menambahkan onCancel agar tombol Batal berfungsi kembali ke riwayat
 export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
@@ -43,11 +39,14 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
-
+  const [shipments, setShipments] = useState<any[]>([])
+  const [availableProducts, setAvailableProducts] = useState<any[]>([])
   const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const successTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
+    useEffect(() => {
+    loadShipments()
+
     return () => {
       if (submitTimeoutRef.current) clearTimeout(submitTimeoutRef.current)
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
@@ -55,12 +54,30 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     }
   }, [photoPreview])
 
-  const handleShipmentChange = (shipmentId: string) => {
-    const selected = shipmentIds.find((s) => s.id === shipmentId)
+    async function loadShipments() {
+    try {
+      const data = await getIncomingGoods()
+      setShipments(data || [])
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+      const handleShipmentChange = (shipmentId: string) => {
+    const selected = shipments.find(
+      (s) => s.incoming_id.toString() === shipmentId
+    )
+
+    setAvailableProducts(
+      selected?.incoming_good_details ?? []
+    )
+
     setFormData((prev) => ({
       ...prev,
       shipmentId,
-      supplierName: selected?.supplier || '',
+      supplierName:
+        selected?.suppliers?.supplier_name ?? '',
+      productName: '',
     }))
   }
 
@@ -91,19 +108,71 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     setPhotoPreview(null)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
-    // Simulasi pengiriman data
-    submitTimeoutRef.current = setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      setIsSubmitting(true)
+
+      const shipment = shipments.find(
+        (s) =>
+          s.incoming_id.toString() ===
+          formData.shipmentId
+      )
+
+      if (!shipment) {
+        alert('Data pengiriman tidak ditemukan')
+        return
+      }
+
+      const detail =
+        shipment.incoming_good_details?.find(
+          (d: any) =>
+            d.products?.product_name
+              .toLowerCase()
+              .includes(
+                formData.productName.toLowerCase()
+              )
+        )
+
+      if (!detail) {
+        alert(
+          'Produk tidak ditemukan pada pengiriman tersebut'
+        )
+        return
+      }
+
+      await createReturn(
+        {
+          supplier_id: shipment.supplier_id,
+          incoming_id: shipment.incoming_id,
+          return_date: new Date()
+            .toISOString()
+            .split('T')[0],
+          reason: formData.returnReason,
+        },
+        [
+          {
+          product_id: detail.products?.product_id,
+          quantity_returned:
+            Number(formData.quantityToReturn),
+          notes: formData.returnReason,
+        },
+        ]
+      )
+
       setSubmitSuccess(true)
+
       successTimeoutRef.current = setTimeout(() => {
         setSubmitSuccess(false)
         onCancel()
       }, 2000)
-    }, 1000)
+    } catch (error) {
+      console.error(error)
+      alert('Gagal menyimpan retur')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const isFormValid =
@@ -112,6 +181,12 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     formData.quantityToReturn &&
     formData.returnReason &&
     formData.photoFile
+
+  const selectedProduct = availableProducts.find(
+    (p) =>
+      p.products?.product_name ===
+      formData.productName
+  )
 
   return (
     // Menghapus max-w-4xl agar tampilan full width
@@ -151,9 +226,12 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
                 className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
               >
                 <option value="">Pilih ID pengiriman...</option>
-                {shipmentIds.map((shipment) => (
-                  <option key={shipment.id} value={shipment.id}>
-                    {shipment.id} - {shipment.supplier}
+                {shipments.map((shipment) => (
+                  <option
+                    key={shipment.incoming_id}
+                    value={shipment.incoming_id}
+                  >
+                    {`SHP-${String(shipment.incoming_id).padStart(3, '0')}`} - {shipment.suppliers?.supplier_name}
                   </option>
                 ))}
               </select>
@@ -184,14 +262,30 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Nama Produk *</label>
-              <input
-                type="text"
-                value={formData.productName}
-                onChange={(e) => setFormData((prev) => ({ ...prev, productName: e.target.value }))}
-                placeholder="Masukkan nama produk..."
-                required
-                className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
-              />
+              <select
+                  value={formData.productName}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      productName: e.target.value,
+                    }))
+                  }
+                  required
+                  className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground outline-none focus:border-accent transition-colors"
+                >
+                  <option value="">
+                    Pilih produk...
+                  </option>
+
+                  {availableProducts.map((item: any) => (
+                    <option
+                      key={item.detail_id}
+                      value={item.products?.product_name}
+                    >
+                      {item.products?.product_name}
+                    </option>
+                  ))}
+                </select>
             </div>
 
             <div>
@@ -211,6 +305,11 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
                 required
                 className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
               />
+                              {selectedProduct && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Maksimal retur: {selectedProduct.quantity} unit
+                  </p>
+                )}
             </div>
           </div>
         </div>
