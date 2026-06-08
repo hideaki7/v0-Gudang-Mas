@@ -134,7 +134,10 @@ export function Dashboard() {
         </header>
 
         <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto w-full">
-          <div className="w-full min-w-0">
+          <div
+            key={`${activeNav}-${isCreatingSupplier}-${isCreatingReturn}`}
+            className="w-full min-w-0 page-transition"
+          >
             {activeNav === 'dashboard' && <MasterDashboard />}
             {activeNav === 'inventory' && <InventoryPage />}
             {activeNav === 'suppliers' && (

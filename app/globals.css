@@ -3,43 +3,46 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
 :root {
-  --background: #2a2a3e;
-  --foreground: #e5e7eb;
-  --card: rgba(255, 255, 255, 0.05);
-  --card-foreground: #e5e7eb;
-  --popover: rgba(255, 255, 255, 0.05);
-  --popover-foreground: #e5e7eb;
-  --primary: #ff8c42;
-  --primary-foreground: #2a2a3e;
-  --secondary: rgba(255, 255, 255, 0.08);
-  --secondary-foreground: #e5e7eb;
-  --muted: rgba(255, 255, 255, 0.1);
-  --muted-foreground: #9ca3af;
-  --accent: #0ea5e9;
-  --accent-foreground: #2a2a3e;
+  /* === LIGHT MODE === */
+  --background: #EDEDF9;
+  --foreground: #1a1a2e;
+  --card: #F7F8FC;
+  --card-foreground: #1a1a2e;
+  --popover: #F7F8FC;
+  --popover-foreground: #1a1a2e;
+  --primary: #4250F1;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e3f5;
+  --secondary-foreground: #1a1a2e;
+  --muted: #e2e3f5;
+  --muted-foreground: #6b6b8d;
+  --accent: #4250F1;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.08);
-  --ring: #ff8c42;
+  --border: rgba(66, 80, 241, 0.15);
+  --input: #e8e9f5;
+  --ring: #4250F1;
   --chart-1: #14b8a6;
   --chart-2: #f472b6;
   --chart-3: #10b981;
-  --chart-4: #0ea5e9;
+  --chart-4: #4250F1;
   --chart-5: #f59e0b;
   --radius: 1.5rem;
-  --sidebar: rgba(255, 255, 255, 0.05);
-  --sidebar-foreground: #e5e7eb;
-  --sidebar-primary: #ff8c42;
-  --sidebar-primary-foreground: #2a2a3e;
-  --sidebar-accent: rgba(255, 255, 255, 0.1);
-  --sidebar-accent-foreground: #e5e7eb;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #ff8c42;
+  --sidebar: #F7F8FC;
+  --sidebar-foreground: #1a1a2e;
+  --sidebar-primary: #4250F1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e2e3f5;
+  --sidebar-accent-foreground: #1a1a2e;
+  --sidebar-border: rgba(66, 80, 241, 0.15);
+  --sidebar-ring: #4250F1;
 }
 
 .dark {
+  /* === DARK MODE === */
   --background: #2a2a3e;
   --foreground: #e5e7eb;
   --card: rgba(255, 255, 255, 0.05);
@@ -118,6 +121,14 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Smooth theme color transitions */
+    transition:
+      background-color 350ms ease,
+      color 350ms ease,
+      border-color 350ms ease,
+      box-shadow 350ms ease,
+      fill 350ms ease,
+      stroke 350ms ease;
   }
 
   body {
@@ -127,4 +138,20 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-mono;
   }
+}
+
+/* === Page Transition Animation === */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

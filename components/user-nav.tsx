@@ -1,21 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Globe, Moon, Sun } from 'lucide-react'
+import { Check, LogOut, Moon, Sun } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 // Menerima children agar bisa membungkus tombol sidebar yang sudah ada
 export function UserNav({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme()
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    // signOut akan clear semua cookie/token, termasuk token yang expired
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
     <DropdownMenu>
@@ -42,23 +52,42 @@ export function UserNav({ children }: { children: React.ReactNode }) {
         {/* Pengaturan Tema */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-foreground font-semibold px-3">Tema Tampilan</DropdownMenuLabel>
-          <DropdownMenuCheckboxItem
-            checked={theme === 'dark'}
-            onCheckedChange={() => setTheme('dark')}
-            className="cursor-pointer rounded-lg mx-1"
+
+          {/* Dark Mode */}
+          <DropdownMenuItem
+            onSelect={() => setTheme('dark')}
+            className="cursor-pointer rounded-lg mx-1 flex items-center justify-between"
           >
-            <Moon className="w-4 h-4 mr-2" />
-            Dark Mode (Default)
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={theme === 'light'}
-            onCheckedChange={() => setTheme('light')}
-            className="cursor-pointer rounded-lg mx-1"
+            <div className="flex items-center gap-2">
+              <Moon className="w-4 h-4" />
+              <span>Dark Mode</span>
+            </div>
+            {theme === 'dark' && <Check className="w-4 h-4 text-accent" />}
+          </DropdownMenuItem>
+
+          {/* Light Mode */}
+          <DropdownMenuItem
+            onSelect={() => setTheme('light')}
+            className="cursor-pointer rounded-lg mx-1 flex items-center justify-between"
           >
-            <Sun className="w-4 h-4 mr-2" />
-            Light Mode
-          </DropdownMenuCheckboxItem>
+            <div className="flex items-center gap-2">
+              <Sun className="w-4 h-4" />
+              <span>Light Mode</span>
+            </div>
+            {theme === 'light' && <Check className="w-4 h-4 text-accent" />}
+          </DropdownMenuItem>
         </DropdownMenuGroup>
+
+        <DropdownMenuSeparator className="bg-border/50" />
+
+        {/* Logout */}
+        <DropdownMenuItem
+          onSelect={handleSignOut}
+          className="cursor-pointer rounded-lg mx-1 text-destructive focus:text-destructive focus:bg-destructive/10"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Keluar
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
