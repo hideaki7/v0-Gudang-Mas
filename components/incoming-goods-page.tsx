@@ -28,13 +28,15 @@ export function IncomingGoodsPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [suppliers, setSuppliers] = useState<any[]>([])
   const [incomingGoods, setIncomingGoods] = useState<any[]>([])
+  const [products, setProducts] = useState<any[]>([])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-    useEffect(() => {
-      loadSuppliers()
-      loadIncomingGoods()
+      useEffect(() => {
+    loadSuppliers()
+    loadIncomingGoods()
+    loadProducts()
 
-      return () => {
+    return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [])
@@ -67,6 +69,15 @@ export function IncomingGoodsPage() {
           `SHP-${String(data[0].incoming_id).padStart(3, '0')}`
         )
       }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+    async function loadProducts() {
+    try {
+      const data = await getProducts()
+      setProducts(data || [])
     } catch (error) {
       console.error(error)
     }
@@ -304,13 +315,26 @@ export function IncomingGoodsPage() {
               <div className="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
                 {productRows.map((row) => (
                   <div key={row.id} className="flex gap-2 items-center">
-                    <input
-                      type="text"
-                      placeholder="Nama Produk"
-                      value={row.name}
-                      onChange={(e) => handleProductChange(row.id, 'name', e.target.value)}
-                      className="flex-1 bg-secondary/50 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                    />
+                    <select
+                        value={row.name}
+                        onChange={(e) =>
+                          handleProductChange(row.id, 'name', e.target.value)
+                        }
+                        className="flex-1 bg-secondary/50 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                      >
+                        <option value="">
+                          Pilih Produk
+                        </option>
+
+                        {products.map((product) => (
+                          <option
+                            key={product.product_id}
+                            value={product.product_name}
+                          >
+                            {product.sku} - {product.product_name}
+                          </option>
+                        ))}
+                      </select>
                     <input
                       type="number"
                       placeholder="Jml"

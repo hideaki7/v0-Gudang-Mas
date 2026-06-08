@@ -6,24 +6,16 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer
 } from 'recharts'
+import { useEffect, useState } from 'react'
+import {
+  getStockDistribution,
+  getTrendData
+} from '@/lib/services/dashboard'
 
 // Data untuk Incoming vs Returns Trend
-const trendData = [
-  { bulan: 'Jan', barangMasuk: 450, retur: 24 },
-  { bulan: 'Feb', barangMasuk: 380, retur: 22 },
-  { bulan: 'Mar', barangMasuk: 520, retur: 29 },
-  { bulan: 'Apr', barangMasuk: 480, retur: 21 },
-  { bulan: 'Mei', barangMasuk: 610, retur: 25 },
-  { bulan: 'Jun', barangMasuk: 550, retur: 28 },
-]
+
 
 // Data untuk Stock Distribution
-const stockData = [
-  { name: 'Tersedia', value: 65, color: '#34d399' },
-  { name: 'Rendah', value: 20, color: '#f97316' },
-  { name: 'Habis', value: 15, color: '#f87171' },
-]
-
 // Custom Tooltip — Area Chart
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TrendTooltip = ({ active, payload, label }: any) => {
@@ -77,6 +69,19 @@ const PieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value }: a
 }
 
 export default function DashboardCharts() {
+const [stockData, setStockData] = useState<any[]>([])
+const [trendData, setTrendData] = useState<any[]>([])
+  useEffect(() => {
+    loadChartData()
+  }, [])
+
+  async function loadChartData() {
+  const stock = await getStockDistribution()
+  setStockData(stock)
+
+  const trend = await getTrendData()
+  setTrendData(trend)
+}
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Trend Chart — Area Chart Modern */}

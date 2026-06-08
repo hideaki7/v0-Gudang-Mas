@@ -2,20 +2,19 @@ import dynamic from 'next/dynamic'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { TrendingUp, ArrowUp, ArrowDown, Package, PackageCheck, RotateCcw, Star } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import {
+  getDashboardStats,
+  getRecentActivities,
+  getTopSuppliers
+} from '@/lib/services/dashboard'
+
 
 const DashboardCharts = dynamic(() => import('./dashboard-charts'), {
   ssr: false,
   loading: () => <div className="h-64 animate-pulse bg-secondary/50 rounded-3xl" />
 })
 
-// Top Suppliers dengan return rate
-const topSuppliersData = [
-  { name: 'PT Maju Jaya', shipments: 145, returns: 8, returnRate: 5.5 },
-  { name: 'CV Industri', shipments: 128, returns: 12, returnRate: 9.4 },
-  { name: 'PT Global Trade', shipments: 156, returns: 18, returnRate: 11.5 },
-  { name: 'UD Ekspor Import', shipments: 98, returns: 5, returnRate: 5.1 },
-  { name: 'PT Sejahtera', shipments: 112, returns: 9, returnRate: 8.0 },
-]
 
 // Recent Activity
 const recentActivityData = [
@@ -26,47 +25,80 @@ const recentActivityData = [
   { id: 'IN-2024-003', pemasok: 'PT Sejahtera', jenis: 'Penerimaan', waktu: '1 hari lalu', status: 'Selesai' },
 ]
 
-const metricsData = [
-  {
-    label: 'Total Stok',
-    value: '24,580',
-    subtitle: 'Item di gudang',
-    change: '+5.2%',
-    positive: true,
-    Icon: Package,
-    color: '#38bdf8',
-  },
-  {
-    label: 'Barang Masuk',
-    value: '3,240',
-    subtitle: 'Bulan ini',
-    change: '+12.5%',
-    positive: true,
-    Icon: PackageCheck,
-    color: '#34d399',
-  },
-  {
-    label: 'Total Retur',
-    value: '287',
-    subtitle: 'Tahun ini',
-    change: '-3.2%',
-    positive: true,
-    Icon: RotateCcw,
-    color: '#f97316',
-  },
-  {
+
+export function MasterDashboard() {
+  const [topSuppliers, setTopSuppliers] = useState<any[]>([])
+  const [activities, setActivities] = useState<any[]>([])
+  const [stats, setStats] = useState({
+  totalStock: 0,
+  incomingCount: 0,
+  returnCount: 0,
+  qualityScore: '0',
+})
+
+  useEffect(() => {
+    loadDashboard()
+  }, [])
+
+  async function loadDashboard() {
+  try {
+    const statsData = await getDashboardStats()
+    setStats(statsData)
+
+    const activitiesData =
+      await getRecentActivities()
+
+    setActivities(activitiesData)
+
+    const suppliersData =
+      await getTopSuppliers()
+
+    setTopSuppliers(suppliersData)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+  const metricsData = [
+    {
+      label: 'Total Stok',
+      value: stats.totalStock.toLocaleString(),
+      subtitle: 'Item di gudang',
+      change: '',
+      positive: true,
+      Icon: Package,
+      color: '#38bdf8',
+    },
+    {
+      label: 'Barang Masuk',
+      value: stats.incomingCount.toString(),
+      subtitle: 'Total transaksi',
+      change: '',
+      positive: true,
+      Icon: PackageCheck,
+      color: '#34d399',
+    },
+    {
+      label: 'Total Retur',
+      value: stats.returnCount.toString(),
+      subtitle: 'Total retur',
+      change: '',
+      positive: true,
+      Icon: RotateCcw,
+      color: '#f97316',
+    },
+    {
     label: 'Skor Kualitas',
-    value: '94.2%',
-    subtitle: 'Minggu ini',
-    change: '+2.1%',
+    value: `${stats.qualityScore}%`,
+    subtitle: 'Berdasarkan retur',
+    change: '',
     positive: true,
     Icon: Star,
     color: '#a78bfa',
   },
-]
+  ]
 
-
-export function MasterDashboard() {
   return (
     <div className="p-8 space-y-8">
       {/* Header */}
@@ -132,7 +164,7 @@ export function MasterDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {topSuppliersData.map((supplier, idx) => (
+                {topSuppliers.map((supplier, idx) => (
                   <TableRow
                     key={idx}
                     className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
@@ -167,14 +199,14 @@ export function MasterDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentActivityData.map((activity, idx) => (
+                {activities.map((activity, idx) => (
                   <TableRow
                     key={idx}
                     className="border-b border-border hover:bg-secondary/50 transition-all duration-200"
                   >
                     <TableCell className="text-primary font-mono text-sm">{activity.id}</TableCell>
-                    <TableCell className="text-foreground">{activity.jenis}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{activity.waktu}</TableCell>
+                    <TableCell className="text-foreground">{activity.type}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{new Date(activity.date).toLocaleDateString('id-ID')}</TableCell>
                     <TableCell>
                       <Badge className={`${activity.status === 'Selesai' ? 'bg-emerald-500/30 text-emerald-300' : 'bg-orange-500/30 text-orange-300'} border-0 rounded-lg`}>
                         {activity.status}
