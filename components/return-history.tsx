@@ -138,7 +138,17 @@ async function handleReject(id: number) {
             Ajukan Retur Baru
           </button>
 
-          <button className="bg-secondary/50 hover:bg-secondary text-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border w-full sm:w-auto">
+          <button
+            onClick={async () => {
+              const { exportReturnsExcel } =
+                await import(
+                  '@/lib/services/export-excel'
+                )
+
+              exportReturnsExcel(filteredData)
+            }}
+            className="bg-secondary/50 hover:bg-secondary text-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl flex items-center gap-2 transition-all duration-200 font-medium border border-border w-full sm:w-auto"
+          >
             <Download className="w-5 h-5" />
             Ekspor Laporan
           </button>

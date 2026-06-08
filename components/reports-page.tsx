@@ -159,7 +159,20 @@ export function ReportsPage() {
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Analisis &amp; Laporan</h1>
           <p className="text-sm sm:text-base text-muted-foreground">Ringkasan data statistik dan tren operasional gudang.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl font-semibold transition-all duration-200 shadow-lg w-full sm:w-auto">
+        <button
+          onClick={async () => {
+            const { exportDashboardExcel } =
+              await import(
+                '@/lib/services/export-excel'
+              )
+
+            exportDashboardExcel(
+              statsCards,
+              topReturnSuppliers
+            )
+          }}
+          className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground px-4 sm:px-6 py-3 h-10 sm:h-auto rounded-xl font-semibold transition-all duration-200 shadow-lg w-full sm:w-auto"
+        >
           <Download className="w-5 h-5" />
           Ekspor Laporan
         </button>
