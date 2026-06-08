@@ -7,35 +7,24 @@ import {
   ResponsiveContainer
 } from 'recharts'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useEffect, useState } from 'react'
+import {
+  getSupplierReturnStats,
+} from '@/lib/services/returns'
+
+import {
+  getDashboardStats
+} from '@/lib/services/dashboard'
 import { Download, TrendingUp, TrendingDown, Clock, Users } from 'lucide-react'
+import {
+  getActiveSuppliersCount
+} from '@/lib/services/dashboard'
+import {
+  getMonthlyReturnStats
+} from '@/lib/services/returns'
 
 // Data Performa Supplier
-const supplierPerformanceData = [
-  { name: 'PT Maju Jaya', retur: 12, tepatWaktu: 95, kualitas: 88 },
-  { name: 'CV Industri', retur: 8, tepatWaktu: 98, kualitas: 92 },
-  { name: 'Bersama Utama', retur: 15, tepatWaktu: 92, kualitas: 85 },
-  { name: 'Global Supplies', retur: 5, tepatWaktu: 99, kualitas: 95 },
-  { name: 'Tech Components', retur: 18, tepatWaktu: 88, kualitas: 82 },
-]
 
-// Data Tren Retur Bulanan
-const monthlyReturnTrendData = [
-  { month: 'Jan', total: 34, disetujui: 28, ditolak: 6 },
-  { month: 'Feb', total: 28, disetujui: 24, ditolak: 4 },
-  { month: 'Mar', total: 42, disetujui: 35, ditolak: 7 },
-  { month: 'Apr', total: 38, disetujui: 31, ditolak: 7 },
-  { month: 'Mei', total: 45, disetujui: 38, ditolak: 7 },
-  { month: 'Jun', total: 52, disetujui: 43, ditolak: 9 },
-]
-
-// Daftar Supplier dengan Retur Terbanyak
-const topReturnSuppliers = [
-  { supplier: 'Tech Components Asia', returns: 18, returnRate: '8.2%', reason: 'Barang Rusak' },
-  { supplier: 'Bersama Utama', returns: 15, returnRate: '7.1%', reason: 'Salah Spesifikasi' },
-  { supplier: 'PT Maju Jaya', returns: 12, returnRate: '5.5%', reason: 'Masalah Kualitas' },
-  { supplier: 'CV Industri Indonesia', returns: 8, returnRate: '3.8%', reason: 'Kekurangan Stok' },
-  { supplier: 'Global Supplies Ltd', returns: 5, returnRate: '2.2%', reason: 'Kesalahan Dokumen' },
-]
 
 // Custom Tooltip Bar Chart
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,15 +66,92 @@ const AreaTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
-const statsCards = [
-  { label: 'Total Retur (Bulan Ini)', value: '52', sub: '+15% dari bulan lalu', color: '#f97316', subColor: '#fdba74', Icon: TrendingUp },
-  { label: 'Tingkat Persetujuan', value: '82.7%', sub: '43 dari 52 retur disetujui', color: '#34d399', subColor: '#6ee7b7', Icon: TrendingUp },
-  { label: 'Rata-rata Resolusi', value: '3.2 Hari', sub: 'Waktu proses pengerjaan', color: '#60a5fa', subColor: '#93c5fd', Icon: Clock },
-  { label: 'Supplier Aktif', value: '5', sub: 'Supplier dengan retur bulan ini', color: '#a78bfa', subColor: '#c4b5fd', Icon: Users },
-]
+
 
 export function ReportsPage() {
+  const [supplierPerformanceData, setSupplierPerformanceData] = useState<any[]>([])
+  const [monthlyReturnTrendData, setMonthlyReturnTrendData] = useState<any[]>([])
+  const [topReturnSuppliers, setTopReturnSuppliers] = useState<any[]>([])
+  const [statsCards, setStatsCards] = useState<any[]>([])
+
+  useEffect(() => {
+    loadReports()
+  }, [])
+
+  async function loadReports() {
+  try {
+    const suppliers = await getSupplierReturnStats()
+    const activeSuppliers = await getActiveSuppliersCount()
+    const trend =
+  await getMonthlyReturnStats()
+    const dashboard = await getDashboardStats()
+
+    setSupplierPerformanceData(
+      suppliers.map((s: any) => ({
+        name: s.supplier_name,
+        retur: s.total_returns,
+        tepatWaktu: 100,
+        kualitas: Math.max(
+          0,
+          100 - s.total_returns * 5
+        ),
+      }))
+    )
+
+    setMonthlyReturnTrendData(trend)
+
+    setTopReturnSuppliers(
+  suppliers.map((s: any) => ({
+    supplier: s.supplier_name,
+    returns: s.total_returns,
+    returnRate: `${s.total_returns}%`,
+    reason: s.mainReason,
+  }))
+)
+
+    setStatsCards([
+      {
+        label: 'Total Retur',
+        value: dashboard.returnCount,
+        sub: 'Total retur tercatat',
+        color: '#f97316',
+        subColor: '#fdba74',
+        Icon: TrendingUp,
+      },
+      {
+        label: 'Skor Kualitas',
+        value: `${dashboard.qualityScore}%`,
+        sub: 'Berdasarkan unit retur',
+        color: '#34d399',
+        subColor: '#6ee7b7',
+        Icon: TrendingUp,
+      },
+      {
+        label: 'Total Stok',
+        value: dashboard.totalStock,
+        sub: 'Unit tersedia',
+        color: '#60a5fa',
+        subColor: '#93c5fd',
+        Icon: Clock,
+      },
+      {
+          label: 'Supplier Aktif',
+          value: activeSuppliers,
+        
+        sub: 'Supplier pernah transaksi',
+        color: '#a78bfa',
+        subColor: '#c4b5fd',
+        Icon: Users,
+      },
+    ])
+  } catch (error) {
+    console.error(error)
+  }
+}
+
   return (
+    
+
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">

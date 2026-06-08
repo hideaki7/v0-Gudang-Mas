@@ -127,11 +127,12 @@ export async function getSupplierReturnStats() {
   const { data, error } = await supabase
     .from('returns')
     .select(`
-      supplier_id,
-      status,
-      suppliers (supplier_name),
-      return_details (quantity_returned)
-    `)
+  supplier_id,
+  status,
+  reason,
+  suppliers (supplier_name),
+  return_details (quantity_returned)
+`)
 
   if (error) throw error
 
@@ -141,14 +142,16 @@ export async function getSupplierReturnStats() {
 
       if (!acc[id]) {
         acc[id] = {
-          supplier_id: id,
-          supplier_name: (ret.suppliers as any)?.supplier_name,
-          total_returns: 0,
-          total_qty_returned: 0,
-        }
+  supplier_id: id,
+  supplier_name: (ret.suppliers as any)?.supplier_name,
+  total_returns: 0,
+  total_qty_returned: 0,
+  reasons: [],
+}
       }
 
       acc[id].total_returns += 1
+      acc[id].reasons.push(ret.reason)
       acc[id].total_qty_returned +=
         (ret.return_details as any[])?.reduce(
           (sum: number, d: any) => sum + d.quantity_returned,
@@ -160,7 +163,67 @@ export async function getSupplierReturnStats() {
     {}
   )
 
-  return Object.values(stats ?? {}).sort(
-    (a: any, b: any) => b.total_returns - a.total_returns
+  return Object.values(stats ?? {})
+  .map((supplier:any) => {
+
+    const reasonCount: Record<string, number> = {}
+
+    supplier.reasons.forEach((r:string) => {
+      reasonCount[r] =
+        (reasonCount[r] || 0) + 1
+    })
+
+    const mainReason =
+      Object.entries(reasonCount)
+        .sort((a,b) => b[1] - a[1])[0]?.[0]
+      || '-'
+
+    return {
+      ...supplier,
+      mainReason,
+    }
+  })
+  .sort(
+    (a:any,b:any) =>
+      b.total_returns - a.total_returns
   )
+}
+
+  export async function getMonthlyReturnStats() {
+  const { data } = await supabase
+    .from('returns')
+    .select(`
+      return_date,
+      status
+    `)
+
+  const months = [
+    'Jan','Feb','Mar','Apr',
+    'Mei','Jun','Jul','Agu',
+    'Sep','Okt','Nov','Des'
+  ]
+
+  return months.map((month,index) => {
+    const monthReturns =
+      data?.filter(
+        r =>
+          new Date(r.return_date).getMonth()
+          === index
+      ) || []
+
+    return {
+      month,
+      total: monthReturns.length,
+
+      disetujui:
+        monthReturns.filter(
+          r => r.status === 'approved'
+        ).length,
+
+      ditolak:
+        monthReturns.filter(
+          r => r.status === 'rejected'
+        ).length,
+    }
+  })
 }

@@ -207,3 +207,16 @@ export async function getRecentActivities() {
     }
   })
 }
+    export async function getActiveSuppliersCount() {
+  const { data } = await supabase
+    .from('incoming_goods')
+    .select('supplier_id')
+
+  const uniqueSuppliers = [
+    ...new Set(
+      data?.map(item => item.supplier_id) || []
+    )
+  ]
+
+  return uniqueSuppliers.length
+}
