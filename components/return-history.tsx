@@ -7,6 +7,7 @@ import {
   getReturns,
   updateReturnStatus
 } from '@/lib/services/returns'
+import { createClient } from '@/lib/supabase/client'
 
 interface ReturnItem {
   returnId: number
@@ -19,20 +20,31 @@ interface ReturnItem {
   status: 'Menunggu' | 'Disetujui' | 'Ditolak'
 }
 
+const supabase = createClient()
+
 // Tambahkan onAddReturn ke dalam props agar bisa dipicu dari dashboard.tsx
 export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu' | 'Disetujui' | 'Ditolak'>('Semua')
   const [returnHistoryData, setReturnHistoryData] = useState<any[]>([])
+  const [userEmail, setUserEmail] = useState('')
 
       useEffect(() => {
-      loadReturns()
-    }, [])
+    loadUser()
+    loadReturns()
+  }, [])
+
+    async function loadUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  setUserEmail(user?.email || '')
+}
 
     async function loadReturns() {
       try {
         const data = await getReturns()
-        console.log("RETURNS:", data)
 
         const formatted = data.map((ret: any) => ({
           returnId: ret.return_id,
@@ -112,12 +124,16 @@ async function handleReject(id: number) {
     }
   }
 
+
   const stats = {
     total: returnHistoryData.length,
     pending: returnHistoryData.filter((item) => item.status === 'Menunggu').length,
     approved: returnHistoryData.filter((item) => item.status === 'Disetujui').length,
     rejected: returnHistoryData.filter((item) => item.status === 'Ditolak').length,
   }
+
+  const canApprove =
+  userEmail === 'supplier@gudangmas.com'
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 w-full">
@@ -179,7 +195,12 @@ async function handleReject(id: number) {
       <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-4 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1">
-            <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">Cari Retur</label>
+            <label
+              htmlFor="search-retur"
+              className="block text-xs sm:text-sm font-medium text-foreground mb-2"
+            >
+              Cari Retur
+            </label>
             <div
               className="group flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
               style={{ boxShadow: 'none' }}
@@ -190,6 +211,8 @@ async function handleReject(id: number) {
             >
               <Search className="w-5 h-5 text-muted-foreground group-hover:text-white group-focus-within:text-white transition-colors duration-300" />
               <input
+                id="search-retur"
+                name="search-retur"
                 type="text"
                 placeholder="Cari disini..."
                 value={searchTerm}
@@ -201,10 +224,22 @@ async function handleReject(id: number) {
           </div>
 
           <div className="w-full sm:w-64">
-            <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">Filter Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+            <label
+  htmlFor="status-filter"
+                  className="block text-xs sm:text-sm font-medium text-foreground mb-2"
+                >
+                  Filter Status
+                </label>
+
+                <select
+                  id="status-filter"
+                  name="status-filter"
+                  value={statusFilter}
+                  onChange={(e) =>
+                    setStatusFilter(
+                      e.target.value as typeof statusFilter
+                    )
+                  }
               className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-foreground outline-none focus:border-accent transition-colors"
             >
               <option value="Semua">Semua Status</option>
@@ -264,7 +299,7 @@ async function handleReject(id: number) {
               <span>{item.status}</span>
             </Badge>
 
-            {item.status === 'Menunggu' && (
+            {item.status === 'Menunggu' && canApprove && (
               <>
                 <button
                   onClick={() => handleApprove(item.returnId)}
