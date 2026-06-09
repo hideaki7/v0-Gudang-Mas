@@ -12,6 +12,7 @@ export async function getReturns() {
         return_detail_id,
         quantity_returned,
         notes,
+        photo_url,
         products (product_id, product_name, sku)
       )
     `)
@@ -33,6 +34,7 @@ export async function getReturnById(id: number) {
         return_detail_id,
         quantity_returned,
         notes,
+        photo_url,
         products (product_id, product_name, sku)
       )
     `)
@@ -49,12 +51,12 @@ export async function createReturn(
     incoming_id: number
     return_date: string
     reason: string
-    photo_url?: string | null
   },
   details: {
     product_id: number
     quantity_returned: number
     notes?: string
+    photo_url?: string | null
   }[]
 ) {
   const supabase = createClient()

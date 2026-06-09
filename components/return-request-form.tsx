@@ -184,7 +184,6 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
             .toISOString()
             .split('T')[0],
           reason: formData.returnReason,
-          photo_url,
         },
         [
           {
@@ -192,6 +191,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
             quantity_returned:
               Number(formData.quantityToReturn),
             notes: formData.returnReason,
+            photo_url,
           },
         ]
       )
