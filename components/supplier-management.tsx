@@ -27,24 +27,32 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
     }
   }
 
-  async function handleDeleteSupplier(id: number) {
-  const confirmDelete = confirm(
-    'Yakin ingin menghapus supplier ini?'
-  )
+  async function handleDeleteSupplier(supplier: any) {
+    if (supplier.incoming_goods?.length > 0) {
+      alert(`Tidak dapat menghapus supplier "${supplier.supplier_name}" karena memiliki riwayat pengiriman.`);
+      return;
+    }
 
-  if (!confirmDelete) return
+    if (supplier.returns?.length > 0) {
+      alert(`Tidak dapat menghapus supplier "${supplier.supplier_name}" karena memiliki riwayat retur.`);
+      return;
+    }
 
-  try {
-    await deleteSupplier(id)
+    const confirmDelete = confirm(
+      `Yakin ingin menghapus supplier ${supplier.supplier_name}?`
+    )
 
-    await loadSuppliers()
+    if (!confirmDelete) return
 
-    alert('Supplier berhasil dihapus')
-  } catch (error) {
-    console.error(error)
-    alert('Gagal menghapus supplier')
+    try {
+      await deleteSupplier(supplier.supplier_id)
+      await loadSuppliers()
+      alert('Supplier berhasil dihapus')
+    } catch (error: any) {
+      console.error(error)
+      alert(`Gagal menghapus supplier: ${error.message || 'Data ini mungkin masih terhubung dengan produk atau transaksi lain.'}`)
+    }
   }
-}
 
   async function handleEditSupplier(supplier: any) {
   const newName = prompt(
@@ -216,7 +224,7 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
 
                       <button
                           onClick={() =>
-                            handleDeleteSupplier(supplier.supplier_id)
+                            handleDeleteSupplier(supplier)
                           }
                           className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
                         >

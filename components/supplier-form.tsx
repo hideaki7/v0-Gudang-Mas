@@ -20,9 +20,21 @@ interface SupplierFormData {
 interface ProductRowData {
   id: string
   name: string
+  category: string
   unit: string
-  price: number
+  stock: number
 }
+
+const productUnits = [
+  'pcs',
+  'meters',
+  'kg',
+  'liter',
+  'box',
+  'pack',
+  'lusin',
+  'roll',
+]
 
 const categories = [
   'Elektronik',
@@ -59,7 +71,7 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<'info' | 'products'>('info')
   const [savedSupplierId, setSavedSupplierId] = useState<number | null>(null)
   const [productRows, setProductRows] = useState<ProductRowData[]>([
-    { id: crypto.randomUUID(), name: '', unit: '', price: 0 },
+    { id: crypto.randomUUID(), name: '', category: '', unit: '', stock: 0 },
   ])
   const [productError, setProductError] = useState('')
 
@@ -100,9 +112,9 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
     }
 
     // Validasi semua field terisi
-    const hasIncomplete = validRows.some(r => !r.unit.trim() || r.price <= 0)
+    const hasIncomplete = validRows.some(r => !r.unit.trim() || !r.category || r.stock < 0)
     if (hasIncomplete) {
-      setProductError('Pastikan semua produk memiliki nama, unit, dan harga yang valid.')
+      setProductError('Pastikan semua produk memiliki nama, kategori, unit, dan stok yang valid.')
       return
     }
 
@@ -122,8 +134,9 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
           product_name: row.name,
           sku: `SKU-${String((count ?? 0) + i + 1).padStart(3, '0')}`,
           supplier_id: savedSupplierId!,
+          category_id: categoryMap[row.category],
           unit: row.unit,
-          unit_price: row.price,
+          initial_stock: row.stock,
         })
       }
 
@@ -144,7 +157,7 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
   const handleAddProductRow = () => {
     setProductRows([
       ...productRows,
-      { id: crypto.randomUUID(), name: '', unit: '', price: 0 },
+      { id: crypto.randomUUID(), name: '', category: '', unit: '', stock: 0 },
     ])
   }
 
@@ -222,23 +235,45 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
                   }
                   className="flex-1 bg-[#2a2a3e] border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
-                <input
-                  type="text"
-                  placeholder="Unit"
+                <Select
+                  value={row.category}
+                  onValueChange={(value) => handleProductRowChange(row.id, 'category', value)}
+                >
+                  <SelectTrigger className="w-36 h-[42px] bg-[#2a2a3e] hover:bg-[#2a2a3e] data-[state=open]:bg-[#2a2a3e] border border-border rounded-xl px-4 text-sm text-foreground focus:ring-0 focus:outline-none focus:border-primary focus-visible:ring-0 focus-visible:border-primary transition-all shadow-none whitespace-nowrap">
+                    <SelectValue placeholder="Kategori" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl z-50">
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat} className="cursor-pointer">
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
                   value={row.unit}
-                  onChange={(e) =>
-                    handleProductRowChange(row.id, 'unit', e.target.value)
-                  }
-                  className="w-28 bg-[#2a2a3e] border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                />
+                  onValueChange={(value) => handleProductRowChange(row.id, 'unit', value)}
+                >
+                  <SelectTrigger className="w-28 h-[42px] bg-[#2a2a3e] hover:bg-[#2a2a3e] data-[state=open]:bg-[#2a2a3e] border border-border rounded-xl px-4 text-sm text-foreground focus:ring-0 focus:outline-none focus:border-primary focus-visible:ring-0 focus-visible:border-primary transition-all shadow-none whitespace-nowrap">
+                    <SelectValue placeholder="Unit" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl z-50">
+                    {productUnits.map((u) => (
+                      <SelectItem key={u} value={u} className="cursor-pointer">
+                        {u}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <input
                   type="number"
-                  placeholder="Harga"
-                  value={row.price || ''}
+                  min="0"
+                  placeholder="Stok Awal"
+                  value={row.stock === 0 ? '' : row.stock}
                   onChange={(e) =>
                     handleProductRowChange(
                       row.id,
-                      'price',
+                      'stock',
                       parseInt(e.target.value) || 0
                     )
                   }
@@ -267,7 +302,7 @@ export function SupplierForm({ onCancel }: { onCancel: () => void }) {
           </button>
 
           <p className="text-xs text-muted-foreground mt-3">
-            SKU akan digenerate otomatis oleh sistem. Anda cukup mengisi nama produk, unit, dan harga satuan.
+            SKU akan digenerate otomatis oleh sistem. Anda cukup mengisi nama produk, kategori, unit, dan stok awal.
           </p>
         </div>
 

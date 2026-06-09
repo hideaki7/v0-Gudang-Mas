@@ -40,20 +40,23 @@ export async function createProduct(payload: {
   supplier_id?: number
   unit?: string
   unit_price?: number
+  initial_stock?: number
 }) {
   const supabase = createClient()
+  const { initial_stock, ...productData } = payload
+
   const { data, error } = await supabase
     .from('products')
-    .insert(payload)
+    .insert(productData)
     .select()
     .single()
 
   if (error) throw error
 
-  // Otomatis buat stock entry dengan quantity 0
+  // Otomatis buat stock entry
   await supabase
     .from('stock')
-    .insert({ product_id: data.product_id, quantity: 0 })
+    .insert({ product_id: data.product_id, quantity: initial_stock || 0 })
 
   return data
 }
