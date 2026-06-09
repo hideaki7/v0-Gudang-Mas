@@ -20,6 +20,8 @@ interface ReturnItem {
   status: 'Menunggu' | 'Disetujui' | 'Ditolak'
 }
 
+// State untuk role-based access dari Supabase user metadata
+
 const supabase = createClient()
 
 // Tambahkan onAddReturn ke dalam props agar bisa dipicu dari dashboard.tsx
@@ -28,68 +30,75 @@ export function ReturnHistory({ onAddReturn }: { onAddReturn: () => void }) {
   const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu' | 'Disetujui' | 'Ditolak'>('Semua')
   const [returnHistoryData, setReturnHistoryData] = useState<any[]>([])
   const [userEmail, setUserEmail] = useState('')
+  const [canApprove, setCanApprove] = useState(false)
 
-      useEffect(() => {
+  useEffect(() => {
     loadUser()
     loadReturns()
   }, [])
 
-    async function loadUser() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  async function loadUser() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  setUserEmail(user?.email || '')
-}
+    // Ambil role dari user metadata, bukan dari email
+    const role = user?.user_metadata?.role
+    setCanApprove(role === 'supplier')
+    setUserEmail(user?.email || '')
+  }
 
-    async function loadReturns() {
-      try {
-        const data = await getReturns()
+  async function loadReturns() {
+    try {
+      const data = await getReturns()
 
-        const formatted = data.map((ret: any) => ({
-          returnId: ret.return_id,
-          id: `RET${String(ret.return_id).padStart(3, '0')}`,
-          timestamp: ret.return_date,
-          supplier: ret.suppliers?.supplier_name ?? '-',
-          productName:
-            ret.return_details?.[0]?.products?.product_name ?? '-',
-          reason: ret.reason,
-          quantity:
-            ret.return_details?.reduce(
-              (sum: number, d: any) => sum + d.quantity_returned,
-              0
-            ) ?? 0,
-          status:
-            ret.status === 'approved'
-              ? 'Disetujui'
-              : ret.status === 'rejected'
+      const formatted = data.map((ret: any) => ({
+        returnId: ret.return_id,
+        id: `RET${String(ret.return_id).padStart(3, '0')}`,
+        timestamp: ret.return_date,
+        supplier: ret.suppliers?.supplier_name ?? '-',
+        productName:
+          ret.return_details
+            ?.map((d: any) => d.products?.product_name)
+            .filter(Boolean)
+            .join(', ') || '-',
+        reason: ret.reason,
+        quantity:
+          ret.return_details?.reduce(
+            (sum: number, d: any) => sum + d.quantity_returned,
+            0
+          ) ?? 0,
+        status:
+          ret.status === 'approved'
+            ? 'Disetujui'
+            : ret.status === 'rejected'
               ? 'Ditolak'
               : 'Menunggu',
-        }))
+      }))
 
-        setReturnHistoryData(formatted)
-      } catch (error) {
-        console.error(error)
-      }
+      setReturnHistoryData(formatted)
+    } catch (error) {
+      console.error(error)
     }
-
-    async function handleApprove(id: number) {
-  try {
-    await updateReturnStatus(id, 'approved')
-    await loadReturns()
-  } catch (error) {
-    console.error(error)
   }
-}
 
-async function handleReject(id: number) {
-  try {
-    await updateReturnStatus(id, 'rejected')
-    await loadReturns()
-  } catch (error) {
-    console.error(error)
+  async function handleApprove(id: number) {
+    try {
+      await updateReturnStatus(id, 'approved')
+      await loadReturns()
+    } catch (error) {
+      console.error(error)
+    }
   }
-}
+
+  async function handleReject(id: number) {
+    try {
+      await updateReturnStatus(id, 'rejected')
+      await loadReturns()
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const filteredData = returnHistoryData.filter((item) => {
     const matchesSearch =
@@ -132,8 +141,7 @@ async function handleReject(id: number) {
     rejected: returnHistoryData.filter((item) => item.status === 'Ditolak').length,
   }
 
-  const canApprove =
-  userEmail === 'supplier@gudangmas.com'
+  // canApprove sudah di-set di loadUser() berdasarkan user_metadata.role
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 w-full">
@@ -202,7 +210,7 @@ async function handleReject(id: number) {
               Cari Retur
             </label>
             <div
-              className="group flex items-center gap-2 sm:gap-3 bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
+              className="group flex items-center gap-2 sm:gap-3 bg-[#2a2a3e] backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-300 hover:border-white/50 focus-within:border-white/70"
               style={{ boxShadow: 'none' }}
               onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.12), 0 0 18px 2px rgba(255,255,255,0.08)')}
               onMouseLeave={e => { if (!e.currentTarget.matches(':focus-within')) e.currentTarget.style.boxShadow = 'none' }}
@@ -225,22 +233,22 @@ async function handleReject(id: number) {
 
           <div className="w-full sm:w-64">
             <label
-  htmlFor="status-filter"
-                  className="block text-xs sm:text-sm font-medium text-foreground mb-2"
-                >
-                  Filter Status
-                </label>
+              htmlFor="status-filter"
+              className="block text-xs sm:text-sm font-medium text-foreground mb-2"
+            >
+              Filter Status
+            </label>
 
-                <select
-                  id="status-filter"
-                  name="status-filter"
-                  value={statusFilter}
-                  onChange={(e) =>
-                    setStatusFilter(
-                      e.target.value as typeof statusFilter
-                    )
-                  }
-              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-foreground outline-none focus:border-accent transition-colors"
+            <select
+              id="status-filter"
+              name="status-filter"
+              value={statusFilter}
+              onChange={(e) =>
+                setStatusFilter(
+                  e.target.value as typeof statusFilter
+                )
+              }
+              className="w-full bg-[#2a2a3e] backdrop-blur-md border border-border rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-foreground outline-none focus:border-accent transition-colors"
             >
               <option value="Semua">Semua Status</option>
               <option value="Menunggu">Menunggu</option>
@@ -292,34 +300,34 @@ async function handleReject(id: number) {
                 </div>
 
                 <div className="flex items-center gap-2 justify-end lg:justify-start">
-            <Badge
-              className={`${getStatusStyles(item.status)} rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 min-w-fit`}
-            >
-              <span>{getStatusIcon(item.status)}</span>
-              <span>{item.status}</span>
-            </Badge>
+                  <Badge
+                    className={`${getStatusStyles(item.status)} rounded-lg px-4 py-2 text-sm font-semibold flex items-center gap-2 min-w-fit`}
+                  >
+                    <span>{getStatusIcon(item.status)}</span>
+                    <span>{item.status}</span>
+                  </Badge>
 
-            {item.status === 'Menunggu' && canApprove && (
-              <>
-                <button
-                  onClick={() => handleApprove(item.returnId)}
-                  className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm"
-                >
-                  Approve
-                </button>
+                  {item.status === 'Menunggu' && canApprove && (
+                    <>
+                      <button
+                        onClick={() => handleApprove(item.returnId)}
+                        className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm"
+                      >
+                        Approve
+                      </button>
 
-                <button
-                  onClick={() => handleReject(item.returnId)}
-                  className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
-                >
-                  Reject
-                </button>
-              </>
-            )}
-          </div>
+                      <button
+                        onClick={() => handleReject(item.returnId)}
+                        className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
-            ))
+            </div>
+          ))
         ) : (
           <div className="bg-card backdrop-blur-xl border border-border rounded-3xl shadow-lg p-12 text-center">
             <p className="text-muted-foreground mb-2">Tidak ada data retur</p>

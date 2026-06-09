@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import {
   Sheet,
   SheetContent,
@@ -13,19 +14,75 @@ import { Menu, AlertCircle, RefreshCw, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface QuickActionsProps {
-  lowStockCount?: number
-  pendingReturnsCount?: number
-  lastActivityTime?: string
   onNavigate: (page: string) => void
 }
 
 export function QuickActions({
-  lowStockCount = 3,
-  pendingReturnsCount = 2,
-  lastActivityTime = 'Baru saja menambahkan Supplier: PT Maju Jaya',
   onNavigate,
 }: QuickActionsProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [lowStockCount, setLowStockCount] = useState(0)
+  const [pendingReturnsCount, setPendingReturnsCount] = useState(0)
+  const [lastActivityText, setLastActivityText] = useState('Memuat aktivitas...')
+
+  useEffect(() => {
+    async function fetchQuickStats() {
+      if (!isOpen) return
+      
+      const supabase = createClient()
+      
+      // 1. Low stock count
+      const { data: stockData } = await supabase.from('stock').select('quantity, min_quantity')
+      if (stockData) {
+        const lowStock = stockData.filter(s => s.quantity <= (s.min_quantity || 10)).length
+        setLowStockCount(lowStock)
+      }
+
+      // 2. Pending returns count
+      const { count: returnsCount } = await supabase
+        .from('returns')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'Pending')
+      
+      if (returnsCount !== null) {
+        setPendingReturnsCount(returnsCount)
+      }
+
+      // 3. Last activity
+      const { data: incoming } = await supabase
+        .from('incoming_goods')
+        .select('received_date')
+        .order('received_date', { ascending: false })
+        .limit(1)
+
+      const { data: returns } = await supabase
+        .from('returns')
+        .select('return_date')
+        .order('return_date', { ascending: false })
+        .limit(1)
+
+      let latestDate = null
+      let activityText = 'Belum ada aktivitas'
+
+      if (incoming && incoming.length > 0) {
+        latestDate = new Date(incoming[0].received_date)
+        activityText = 'Baru saja menerima pengiriman barang'
+      }
+
+      if (returns && returns.length > 0) {
+        const returnDate = new Date(returns[0].return_date)
+        if (!latestDate || returnDate > latestDate) {
+          latestDate = returnDate
+          activityText = 'Baru saja ada pengajuan retur barang'
+        }
+      }
+
+      setLastActivityText(activityText)
+    }
+
+    fetchQuickStats()
+  }, [isOpen])
+
 
   const handleAction = (page: string) => {
     onNavigate(page)
@@ -77,7 +134,7 @@ export function QuickActions({
                 <Clock className="w-5 h-5 text-teal-400 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-sm text-foreground">Aktivitas Terakhir</h3>
-                  <p className="text-xs text-muted-foreground mt-1 truncate">{lastActivityTime}</p>
+                  <p className="text-xs text-muted-foreground mt-1 truncate">{lastActivityText}</p>
                   <div className="text-[10px] text-muted-foreground/60 mt-1 italic">Beberapa saat yang lalu</div>
                 </div>
               </div>

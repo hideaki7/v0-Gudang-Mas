@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getDashboardStats() {
+  const supabase = createClient()
   const { data: stock } = await supabase
     .from('stock')
     .select('quantity')
@@ -53,6 +54,7 @@ const qualityScore =
 }
 
 export async function getRecentActivities() {
+  const supabase = createClient()
   const { data: incoming } = await supabase
     .from('incoming_goods')
     .select('*')
@@ -90,6 +92,7 @@ export async function getRecentActivities() {
 }
 
     export async function getTopSuppliers() {
+  const supabase = createClient()
   const { data: suppliers } = await supabase
     .from('suppliers')
     .select(`
@@ -137,6 +140,7 @@ export async function getRecentActivities() {
 }
 
     export async function getStockDistribution() {
+  const supabase = createClient()
   const { data } = await supabase
     .from('stock')
     .select(`
@@ -179,6 +183,7 @@ export async function getRecentActivities() {
   ]
 }
     export async function getTrendData() {
+  const supabase = createClient()
   const { data: incoming } = await supabase
     .from('incoming_goods')
     .select('received_date')
@@ -208,6 +213,7 @@ export async function getRecentActivities() {
   })
 }
     export async function getActiveSuppliersCount() {
+  const supabase = createClient()
   const { data } = await supabase
     .from('incoming_goods')
     .select('supplier_id')

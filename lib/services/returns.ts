@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getReturns() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('returns')
     .select(`
@@ -21,6 +22,7 @@ export async function getReturns() {
 }
 
 export async function getReturnById(id: number) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('returns')
     .select(`
@@ -47,6 +49,7 @@ export async function createReturn(
     incoming_id: number
     return_date: string
     reason: string
+    photo_url?: string | null
   },
   details: {
     product_id: number
@@ -54,6 +57,7 @@ export async function createReturn(
     notes?: string
   }[]
 ) {
+  const supabase = createClient()
   // 1. Insert header retur
   const { data: ret, error: headerError } = await supabase
     .from('returns')
@@ -82,6 +86,7 @@ export async function updateReturnStatus(
   id: number,
   status: 'pending' | 'approved' | 'rejected'
 ) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('returns')
     .update({ status })
@@ -124,6 +129,7 @@ export async function updateReturnStatus(
 }
 
 export async function getSupplierReturnStats() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('returns')
     .select(`
@@ -190,6 +196,7 @@ export async function getSupplierReturnStats() {
 }
 
   export async function getMonthlyReturnStats() {
+  const supabase = createClient()
   const { data } = await supabase
     .from('returns')
     .select(`

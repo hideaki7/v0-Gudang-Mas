@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import {
   DropdownMenu,
@@ -11,21 +11,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Check, LogOut, Moon, Sun } from 'lucide-react'
+import { Check, Moon, Sun } from 'lucide-react'
+import { useSidebar } from '@/components/ui/sidebar'
 import { createClient } from '@/lib/supabase/client'
 
 // Menerima children agar bisa membungkus tombol sidebar yang sudah ada
 export function UserNav({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme()
-  const router = useRouter()
+  const { isMobile } = useSidebar()
+  const [userName, setUserName] = useState('Memuat...')
+  const [userRole, setUserRole] = useState('')
 
-  const handleSignOut = async () => {
-    const supabase = createClient()
-    // signOut akan clear semua cookie/token, termasuk token yang expired
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      const role = user?.user_metadata?.role
+      if (role === 'supplier') {
+        setUserName('Najib Fathir')
+        setUserRole('Supplier')
+      } else {
+        // Default admin
+        setUserName('Samuel Hideaki')
+        setUserRole('Admin Gudang')
+      }
+    }
+    loadUser()
+  }, [])
 
   return (
     <DropdownMenu>
@@ -33,17 +46,18 @@ export function UserNav({ children }: { children: React.ReactNode }) {
         {children}
       </DropdownMenuTrigger>
 
-      {/* Muncul ke samping kanan sidebar agar tidak menutupi menu */}
+      {/* Muncul ke samping kanan sidebar di desktop, dan pop up di mobile */}
       <DropdownMenuContent
-        side="right"
+        side={isMobile ? "bottom" : "right"}
         align="end"
-        className="w-64 bg-card backdrop-blur-xl border border-border rounded-xl p-2 shadow-2xl ml-2"
+        sideOffset={isMobile ? 8 : 0}
+        className="w-56 md:w-64 bg-card backdrop-blur-xl border border-border rounded-xl p-2 shadow-2xl ml-0 md:ml-2"
       >
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-accent font-bold px-3 py-2">Profil Saya</DropdownMenuLabel>
           <div className="px-3 pb-3">
-            <div className="font-semibold text-foreground text-base">Samuel Hideaki</div>
-            <div className="text-xs text-muted-foreground italic">Admin Gudang - ITS Warehouse</div>
+            <div className="font-semibold text-foreground text-base">{userName}</div>
+            <div className="text-xs text-muted-foreground italic">{userRole}</div>
           </div>
         </DropdownMenuGroup>
 
@@ -77,17 +91,6 @@ export function UserNav({ children }: { children: React.ReactNode }) {
             {theme === 'light' && <Check className="w-4 h-4 text-accent" />}
           </DropdownMenuItem>
         </DropdownMenuGroup>
-
-        <DropdownMenuSeparator className="bg-border/50" />
-
-        {/* Logout */}
-        <DropdownMenuItem
-          onSelect={handleSignOut}
-          className="cursor-pointer rounded-lg mx-1 text-destructive focus:text-destructive focus:bg-destructive/10"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Keluar
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

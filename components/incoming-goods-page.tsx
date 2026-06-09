@@ -7,6 +7,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { getIncomingGoods, createIncomingGoods } from '@/lib/services/incoming'
 import { getSuppliers } from '@/lib/services/suppliers'
 import { getProducts } from '@/lib/services/products'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface ProductRow {
   id: string
@@ -18,9 +19,9 @@ interface ProductRow {
 export function IncomingGoodsPage() {
   const [selectedShipment, setSelectedShipment] = useState<string | null>('SHP-001')
   const [formData, setFormData] = useState({
-  supplier: '',
-  date: new Date().toISOString().split('T')[0],
-})
+    supplier: '',
+    date: new Date().toISOString().split('T')[0],
+  })
   const [productRows, setProductRows] = useState<ProductRow[]>([
     { id: '1', name: '', quantity: 0 },
   ])
@@ -29,9 +30,10 @@ export function IncomingGoodsPage() {
   const [suppliers, setSuppliers] = useState<any[]>([])
   const [incomingGoods, setIncomingGoods] = useState<any[]>([])
   const [products, setProducts] = useState<any[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-      useEffect(() => {
+  useEffect(() => {
     loadSuppliers()
     loadIncomingGoods()
     loadProducts()
@@ -41,24 +43,34 @@ export function IncomingGoodsPage() {
     }
   }, [])
 
-    async function loadSuppliers() {
+  async function loadSuppliers() {
     try {
       const data = await getSuppliers()
 
       setSuppliers(data || [])
 
       if (data?.length > 0) {
+        const firstSupplierId = data[0].supplier_id.toString()
         setFormData(prev => ({
           ...prev,
-          supplier: data[0].supplier_id.toString(),
+          supplier: firstSupplierId,
         }))
+        // Filter produk untuk supplier pertama
+        const allProducts = await getProducts()
+        if (allProducts) {
+          setProducts(allProducts)
+          const supplierProducts = allProducts.filter(
+            (p: any) => p.supplier_id === data[0].supplier_id
+          )
+          setFilteredProducts(supplierProducts)
+        }
       }
     } catch (error) {
       console.error(error)
     }
   }
 
-    async function loadIncomingGoods() {
+  async function loadIncomingGoods() {
     try {
       const data = await getIncomingGoods()
 
@@ -74,7 +86,7 @@ export function IncomingGoodsPage() {
     }
   }
 
-    async function loadProducts() {
+  async function loadProducts() {
     try {
       const data = await getProducts()
       setProducts(data || [])
@@ -97,6 +109,20 @@ export function IncomingGoodsPage() {
     setProductRows(productRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)))
   }
 
+  // Handler untuk perubahan supplier — filter produk yang sesuai
+  const handleSupplierChange = (supplierId: string) => {
+    setFormData(prev => ({ ...prev, supplier: supplierId }))
+
+    // Filter produk berdasarkan supplier_id
+    const supplierProducts = products.filter(
+      (p) => p.supplier_id === Number(supplierId)
+    )
+    setFilteredProducts(supplierProducts)
+
+    // Reset semua baris produk yang sudah dipilih
+    setProductRows([{ id: crypto.randomUUID(), name: '', quantity: 0 }])
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMessage('')
@@ -109,6 +135,14 @@ export function IncomingGoodsPage() {
       setErrorMessage(
         'Harap lengkapi semua data barang dan pastikan kuantitas lebih dari 0.'
       )
+      return
+    }
+
+    // Cek produk duplikat
+    const selectedNames = productRows.map(r => r.name).filter(Boolean)
+    const hasDuplicates = selectedNames.length !== new Set(selectedNames).size
+    if (hasDuplicates) {
+      setErrorMessage('Terdapat produk yang dipilih lebih dari satu kali. Gabungkan kuantitasnya dalam satu baris.')
       return
     }
 
@@ -171,8 +205,6 @@ export function IncomingGoodsPage() {
       selectedShipment
   )
 
-  console.log("SELECTED", selectedShipmentData)
-
   return (
     <div className="p-8 space-y-8 w-full">
       {/* Header */}
@@ -197,7 +229,7 @@ export function IncomingGoodsPage() {
                     )
                   }
                   className={`p-5 border-b border-border cursor-pointer transition-all duration-200 hover:bg-secondary/50 ${selectedShipment ===
-`SHP-${String(shipment.incoming_id).padStart(3, '0')}` ? 'bg-secondary border-l-4 border-l-primary' : ''
+                    `SHP-${String(shipment.incoming_id).padStart(3, '0')}` ? 'bg-secondary border-l-4 border-l-primary' : ''
                     }`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -218,11 +250,11 @@ export function IncomingGoodsPage() {
                   </div>
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>{shipment.incoming_good_details?.length ?? 0} item • {
-                          shipment.incoming_good_details?.reduce(
-                            (sum:number,d:any)=>sum+d.quantity,
-                            0
-                          ) ?? 0
-                        } total unit</span>
+                      shipment.incoming_good_details?.reduce(
+                        (sum: number, d: any) => sum + d.quantity,
+                        0
+                      ) ?? 0
+                    } total unit</span>
                     <span>{shipment.received_date}</span>
                   </div>
                 </div>
@@ -253,11 +285,11 @@ export function IncomingGoodsPage() {
                 <div className="space-y-1">
                   <span className="text-muted-foreground block text-xs">Total Kuantitas</span>
                   <span className="text-foreground font-bold">{
-                      selectedShipmentData.incoming_good_details?.reduce(
-                        (sum:number,d:any)=>sum+d.quantity,
-                        0
-                      ) ?? 0
-                    } Unit</span>
+                    selectedShipmentData.incoming_good_details?.reduce(
+                      (sum: number, d: any) => sum + d.quantity,
+                      0
+                    ) ?? 0
+                  } Unit</span>
                 </div>
               </div>
             </div>
@@ -282,21 +314,22 @@ export function IncomingGoodsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 lg:col-span-1">
                 <label className="block text-sm font-medium text-foreground mb-2">Supplier</label>
-                <select
-                  value={formData.supplier}
-                  onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                  className="w-full bg-secondary/50 border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
-                >
-                  {suppliers.map((supplier) => (
-                    <option
-                      key={supplier.supplier_id}
-                      value={supplier.supplier_id}
-                      className="bg-card text-foreground"
-                    >
-                      {supplier.supplier_name}
-                    </option>
-                  ))}
-                </select>
+                <Select value={formData.supplier} onValueChange={handleSupplierChange}>
+                  <SelectTrigger className="w-full h-[50px] bg-[#2a2a3e] hover:bg-[#2a2a3e] data-[state=open]:bg-[#2a2a3e] border border-border rounded-xl px-4 py-3 text-foreground focus:ring-0 focus:outline-none focus:border-primary focus-visible:ring-0 focus-visible:border-primary transition-all text-sm shadow-none">
+                    <SelectValue placeholder="Pilih Supplier" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar z-50">
+                    {suppliers.map((supplier) => (
+                      <SelectItem
+                        key={supplier.supplier_id}
+                        value={supplier.supplier_id.toString()}
+                        className="cursor-pointer"
+                      >
+                        {supplier.supplier_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="col-span-2 lg:col-span-1">
@@ -305,7 +338,7 @@ export function IncomingGoodsPage() {
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full bg-secondary/50 border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
+                  className="w-full bg-[#2a2a3e] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
                 />
               </div>
             </div>
@@ -315,32 +348,34 @@ export function IncomingGoodsPage() {
               <div className="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
                 {productRows.map((row) => (
                   <div key={row.id} className="flex gap-2 items-center">
-                    <select
-                        value={row.name}
-                        onChange={(e) =>
-                          handleProductChange(row.id, 'name', e.target.value)
-                        }
-                        className="flex-1 bg-secondary/50 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                      >
-                        <option value="">
-                          Pilih Produk
-                        </option>
-
-                        {products.map((product) => (
-                          <option
-                            key={product.product_id}
-                            value={product.product_name}
-                          >
-                            {product.sku} - {product.product_name}
-                          </option>
-                        ))}
-                      </select>
+                    <Select value={row.name} onValueChange={(value) => handleProductChange(row.id, 'name', value)}>
+                      <SelectTrigger className="flex-1 h-[42px] bg-secondary/90 hover:bg-secondary/90 data-[state=open]:bg-secondary/90 border border-border rounded-xl px-4 text-sm text-foreground focus:ring-0 focus:outline-none focus:border-primary focus-visible:ring-0 focus-visible:border-primary transition-all shadow-none">
+                        <SelectValue placeholder="Pilih Produk" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar z-50">
+                        {filteredProducts.length > 0 ? (
+                          filteredProducts.map((product) => (
+                            <SelectItem
+                              key={product.product_id}
+                              value={product.product_name}
+                              className="cursor-pointer"
+                            >
+                              {product.sku} - {product.product_name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="empty" disabled className="text-muted-foreground">
+                            Tidak ada produk untuk supplier ini
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
                     <input
                       type="number"
                       placeholder="Jml"
                       value={row.quantity || ''}
                       onChange={(e) => handleProductChange(row.id, 'quantity', parseInt(e.target.value) || 0)}
-                      className="w-24 bg-secondary/50 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                      className="w-24 bg-[#2a2a3e] border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     />
                     {productRows.length > 1 && (
                       <button

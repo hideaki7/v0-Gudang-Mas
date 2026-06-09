@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getIncomingGoods() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('incoming_goods')
     .select(`
@@ -21,6 +22,7 @@ export async function getIncomingGoods() {
 }
 
 export async function getIncomingById(id: number) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('incoming_goods')
     .select(`
@@ -54,6 +56,7 @@ export async function createIncomingGoods(
     unit_price: number
   }[]
 ) {
+  const supabase = createClient()
   // 1. Insert header dulu
   const { data: incoming, error: headerError } = await supabase
     .from('incoming_goods')

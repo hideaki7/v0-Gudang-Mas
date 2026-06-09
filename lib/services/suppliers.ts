@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getSuppliers() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('suppliers')
     .select(`
@@ -8,7 +9,9 @@ export async function getSuppliers() {
       categories (
         category_id,
         category_name
-      )
+      ),
+      incoming_goods (incoming_id),
+      returns (return_id)
     `)
     .order('supplier_name')
 
@@ -17,6 +20,7 @@ export async function getSuppliers() {
 }
 
 export async function getSupplierById(id: number) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('suppliers')
     .select(`
@@ -41,6 +45,7 @@ export async function createSupplier(payload: {
   address?: string
   category_id?: number
 }) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('suppliers')
     .insert(payload)
@@ -62,6 +67,7 @@ export async function updateSupplier(
     category_id?: number
   }
 ) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('suppliers')
     .update(payload)
@@ -74,6 +80,7 @@ export async function updateSupplier(
 }
 
 export async function deleteSupplier(id: number) {
+  const supabase = createClient()
   const { error } = await supabase
     .from('suppliers')
     .delete()

@@ -129,7 +129,7 @@ export function Dashboard() {
             <span className="text-sm font-medium text-muted-foreground">{getPageTitle()}</span>
           </div>
           <div className="flex items-center gap-2">
-            <QuickActions lowStockCount={3} pendingReturnsCount={2} onNavigate={handleNavChange} />
+            <QuickActions onNavigate={handleNavChange} />
           </div>
         </header>
 

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Upload, X } from 'lucide-react'
 import { getIncomingGoods } from '@/lib/services/incoming'
 import { createReturn } from '@/lib/services/returns'
+import { createClient } from '@/lib/supabase/client'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface FormData {
   shipmentId: string
@@ -44,7 +46,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
   const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const successTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-    useEffect(() => {
+  useEffect(() => {
     loadShipments()
 
     return () => {
@@ -54,7 +56,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     }
   }, [photoPreview])
 
-    async function loadShipments() {
+  async function loadShipments() {
     try {
       const data = await getIncomingGoods()
       setShipments(data || [])
@@ -63,7 +65,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     }
   }
 
-      const handleShipmentChange = (shipmentId: string) => {
+  const handleShipmentChange = (shipmentId: string) => {
     const selected = shipments.find(
       (s) => s.incoming_id.toString() === shipmentId
     )
@@ -108,7 +110,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
     setPhotoPreview(null)
   }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
@@ -142,6 +144,38 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
         return
       }
 
+      // Validasi maksimum kuantitas retur
+      const maxQty = detail.quantity ?? 0
+      if (Number(formData.quantityToReturn) > maxQty) {
+        alert(`Jumlah retur tidak boleh melebihi ${maxQty} unit yang ada di pengiriman ini.`)
+        setIsSubmitting(false)
+        return
+      }
+
+      // Upload foto ke Supabase Storage
+      let photo_url: string | null = null
+      if (formData.photoFile) {
+        const supabase = createClient()
+        const fileExt = formData.photoFile.name.split('.').pop()
+        const fileName = `retur-${Date.now()}.${fileExt}`
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('return-photos')
+          .upload(fileName, formData.photoFile)
+
+        if (uploadError) {
+          alert('Gagal upload foto bukti: ' + uploadError.message)
+          setIsSubmitting(false)
+          return
+        }
+
+        const { data: urlData } = supabase.storage
+          .from('return-photos')
+          .getPublicUrl(uploadData.path)
+
+        photo_url = urlData.publicUrl
+      }
+
       await createReturn(
         {
           supplier_id: shipment.supplier_id,
@@ -150,14 +184,15 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
             .toISOString()
             .split('T')[0],
           reason: formData.returnReason,
+          photo_url,
         },
         [
           {
-          product_id: detail.products?.product_id,
-          quantity_returned:
-            Number(formData.quantityToReturn),
-          notes: formData.returnReason,
-        },
+            product_id: detail.products?.product_id,
+            quantity_returned:
+              Number(formData.quantityToReturn),
+            notes: formData.returnReason,
+          },
         ]
       )
 
@@ -201,7 +236,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
       {submitSuccess && (
         <div className="bg-emerald-500/30 border border-emerald-500/50 rounded-xl p-4 text-emerald-300 flex items-center gap-3">
           <div className="w-5 h-5 rounded-full bg-emerald-500/50 flex items-center justify-center text-sm">✓</div>
-          <span>Permintaan retur berhasil dikirim! Menunggu persetujuan admin.</span>
+          <span>Permintaan retur berhasil dikirim! Menunggu persetujuan dari supplier.</span>
         </div>
       )}
 
@@ -219,22 +254,22 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">ID Pengiriman *</label>
-              <select
-                value={formData.shipmentId}
-                onChange={(e) => handleShipmentChange(e.target.value)}
-                required
-                className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
-              >
-                <option value="">Pilih ID pengiriman...</option>
-                {shipments.map((shipment) => (
-                  <option
-                    key={shipment.incoming_id}
-                    value={shipment.incoming_id}
-                  >
-                    {`SHP-${String(shipment.incoming_id).padStart(3, '0')}`} - {shipment.suppliers?.supplier_name}
-                  </option>
-                ))}
-              </select>
+              <Select value={formData.shipmentId} onValueChange={handleShipmentChange} required>
+                <SelectTrigger className="w-full h-[50px] bg-[#2a2a3e] hover:bg-[#2a2a3e] data-[state=open]:bg-[#2a2a3e] border border-border rounded-xl px-4 py-3 text-foreground focus:ring-0 focus:outline-none focus:border-accent focus-visible:ring-0 focus-visible:border-accent transition-colors shadow-none">
+                  <SelectValue placeholder="Pilih ID pengiriman..." />
+                </SelectTrigger>
+                <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar z-50">
+                  {shipments.map((shipment) => (
+                    <SelectItem
+                      key={shipment.incoming_id}
+                      value={shipment.incoming_id.toString()}
+                      className="cursor-pointer"
+                    >
+                      {`SHP-${String(shipment.incoming_id).padStart(3, '0')}`} - {shipment.suppliers?.supplier_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -243,7 +278,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
                 type="text"
                 value={formData.supplierName}
                 readOnly
-                className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-muted-foreground outline-none"
+                className="w-full bg-[#2a2a3e] backdrop-blur-md border border-border rounded-xl px-4 py-3 text-muted-foreground outline-none"
               />
               <p className="text-xs text-muted-foreground mt-1">Terisi otomatis berdasarkan ID pengiriman</p>
             </div>
@@ -262,30 +297,28 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Nama Produk *</label>
-              <select
-                  value={formData.productName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      productName: e.target.value,
-                    }))
-                  }
-                  required
-                  className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground outline-none focus:border-accent transition-colors"
-                >
-                  <option value="">
-                    Pilih produk...
-                  </option>
-
+              <Select
+                value={formData.productName}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, productName: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full h-[50px] bg-[#2a2a3e] hover:bg-[#2a2a3e] data-[state=open]:bg-[#2a2a3e] border border-border rounded-xl px-4 py-3 text-foreground focus:ring-0 focus:outline-none focus:border-accent focus-visible:ring-0 focus-visible:border-accent transition-colors shadow-none">
+                  <SelectValue placeholder="Pilih produk..." />
+                </SelectTrigger>
+                <SelectContent className="bg-[#2a2a3e] border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar z-50">
                   {availableProducts.map((item: any) => (
-                    <option
+                    <SelectItem
                       key={item.detail_id}
                       value={item.products?.product_name}
+                      className="cursor-pointer"
                     >
                       {item.products?.product_name}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -303,13 +336,13 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
                 min="1"
                 max="99999"
                 required
-                className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
+                className="w-full bg-[#2a2a3e] backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
               />
-                              {selectedProduct && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Maksimal retur: {selectedProduct.quantity} unit
-                  </p>
-                )}
+              {selectedProduct && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Maksimal retur: {selectedProduct.quantity} unit
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -329,7 +362,7 @@ export function ReturnRequestForm({ onCancel }: { onCancel: () => void }) {
               value={formData.returnReason}
               onChange={(e) => setFormData((prev) => ({ ...prev, returnReason: e.target.value }))}
               required
-              className="w-full bg-secondary/50 backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
+              className="w-full bg-[#2a2a3e] backdrop-blur-md border border-border rounded-xl px-4 py-3 text-foreground placeholder-muted-foreground outline-none focus:border-accent transition-colors"
             >
               <option value="">Pilih alasan retur...</option>
               {returnReasons.map((reason) => (

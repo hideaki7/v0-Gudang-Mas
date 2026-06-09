@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getProducts() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('products')
     .select(`
@@ -16,6 +17,7 @@ export async function getProducts() {
 }
 
 export async function getProductById(id: number) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('products')
     .select(`
@@ -39,6 +41,7 @@ export async function createProduct(payload: {
   unit?: string
   unit_price?: number
 }) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('products')
     .insert(payload)
@@ -66,6 +69,7 @@ export async function updateProduct(
     unit_price?: number
   }
 ) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('products')
     .update(payload)
@@ -78,6 +82,7 @@ export async function updateProduct(
 }
 
 export async function deleteProduct(id: number) {
+  const supabase = createClient()
   const { error } = await supabase
     .from('products')
     .delete()

@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getAllStock() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('stock')
     .select(`
@@ -22,6 +23,7 @@ export async function getAllStock() {
 }
 
 export async function getLowStock() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('stock')
     .select(`
@@ -38,6 +40,7 @@ export async function updateStock(
   productId: number,
   quantity: number
 ) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('stock')
     .update({

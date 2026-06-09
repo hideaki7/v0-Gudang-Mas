@@ -1,6 +1,7 @@
-import { supabase } from '../supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export async function getCategories() {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -11,6 +12,7 @@ export async function getCategories() {
 }
 
 export async function getCategoryById(id: number) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -25,6 +27,7 @@ export async function createCategory(payload: {
   category_name: string
   description?: string
 }) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('categories')
     .insert(payload)
@@ -42,6 +45,7 @@ export async function updateCategory(
     description?: string
   }
 ) {
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('categories')
     .update(payload)
@@ -54,6 +58,7 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(id: number) {
+  const supabase = createClient()
   const { error } = await supabase
     .from('categories')
     .delete()

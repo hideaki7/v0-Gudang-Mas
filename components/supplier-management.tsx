@@ -196,11 +196,13 @@ export function SupplierManagement({ onAddSupplier }: { onAddSupplier: () => voi
                   </TableCell>
 
                   <TableCell className="text-center font-semibold text-foreground">
-                    -
+                    {supplier.incoming_goods?.length || 0}
                   </TableCell>
 
                   <TableCell className="text-center font-semibold">
-                    -
+                    {supplier.incoming_goods?.length > 0
+                      ? `${((supplier.returns?.length || 0) / supplier.incoming_goods.length * 100).toFixed(1)}%`
+                      : '0%'}
                   </TableCell>
 
                   <TableCell>
